@@ -34,13 +34,11 @@ Router.put("/updateticket/:id",authVerify, async (req, res) => {
     }
 })
 
-
 Router.delete("/deleteticket/:id",authVerify, async (req, res) => {
     let id = req.params.id;
     let data = await Ticket.findByIdAndDelete(id);
     console.log(data);
     res.send(data);
 })
-
-
+ 
 module.exports = Router

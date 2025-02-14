@@ -1,6 +1,7 @@
+const user = require("../models/User.js");
 const jwt = require("jsonwebtoken")
 const secrate_key = "secratekey"
-const verifytoken = (req, res, next) => {
+const verifytoken = async (req, res, next) => {
     const bearerHeader = req.headers.authorization
     console.log(req.headers, "req.headersreq.headers")
     console.log(bearerHeader, "bearerHeaderbearerHeader")
@@ -15,7 +16,12 @@ const verifytoken = (req, res, next) => {
                 res.send({ result: "Unauthorize user" })
             } else {
                 req.user = authData
-                next();
+                console.log(req.user)
+                user.findOne({ id: req.user }).then(()=>{
+                    return next()
+                }).catch(()=>{
+                    res.send("User not Found")
+                })
             }
         })
     } else {

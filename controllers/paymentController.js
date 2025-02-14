@@ -5,7 +5,7 @@ const app = express();
 const Router = express.Router();
 app.use(express.static('public'));
 
-const YOUR_DOMAIN = 'http://localhost:4242';
+const YOUR_DOMAIN = 'http://localhost:3000/';
 
 Router.post('/create-checkout-session', async (req, res) => {
   const session = await stripe.checkout.sessions.create({
@@ -17,11 +17,22 @@ Router.post('/create-checkout-session', async (req, res) => {
       },    
     ],
     mode: 'subscription',
-    success_url: `${YOUR_DOMAIN}?success=true`,
-    cancel_url: `${YOUR_DOMAIN}?canceled=true`,
+    success_url: `${YOUR_DOMAIN}payment/success`,
+    cancel_url: `${YOUR_DOMAIN}payment/cancel`,
+});
+  console.log(session)
+  /* res.redirect(303, session.url); */
+  console.log("-----------------------------");
+  console.log(session.url)
+  res.send(session)
 });
 
-  res.redirect(303, session.url);
-});
+Router.get("/success",async (req,res)=>{
+  res.send("Payment successful")
+})
+Router.get("/cancel",async (req,res)=>{
+  res.send("Payment cancel")
+})
+
 
 module.exports = Router;
