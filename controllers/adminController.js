@@ -26,7 +26,7 @@ Router.post("/addAdmin", async (req, res) => {
                     const hashpassword = await bcrypt.hash(password, round)
                     return hashpassword
             }
-            hashpassword(password)
+            hashpassword(password)  
             .then(hashed => {
                     console.log("hashed passwood", hashed)
                     req.body.password = hashed
