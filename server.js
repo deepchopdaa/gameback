@@ -21,15 +21,15 @@ app.use(cors());
 app.use(express.json());
 
 /* all api route */
-app.use('/admin',adminRoute)
-app.use('/auth',authRoute)
-app.use('/category',categoryRoute)
-app.use('/game',gameRoute)
-app.use('/payment',PaymentRoute)
-app.use('/review',reviewRoute)
-app.use('/ticket',ticketRoute)
-app.use('/user',userRoute)  
-app.use('/send',SendMail)
-app.listen(3000, () => {
-    console.log("app is running on 3000 port")
-})  
+app.use('/admin', adminRoute)
+app.use('/auth', authRoute)
+app.use('/category', categoryRoute)
+app.use('/game', gameRoute)
+app.use('/payment', PaymentRoute)
+app.use('/review', reviewRoute)
+app.use('/ticket', ticketRoute)
+app.use('/user', userRoute)
+app.use('/send', SendMail)
+app.listen(3100, () => {
+    console.log("app is running on 3100 port")
+}) 

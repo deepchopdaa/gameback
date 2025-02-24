@@ -3,13 +3,13 @@ const Router = express.Router();
 const Game = require("../models/Game.js")
 const authVerify = require('../middleware/authMiddleware.js')
 const upload = require("../middleware/uploadMiddleware.js")
-Router.get("/getGame",authVerify, async (req, res) => {
+Router.get("/getGame", async (req, res) => {
     let data = await Game.find();
     res.send(data);
     console.log(data);
 })
 
-Router.post("/addGame",authVerify, async (req, res) => {
+Router.post("/addGame", async (req, res) => {
     let { title, category, description, price, image, rating } = req.body;
     if (title && category && description && price && image && rating) {
         let data = await Game.create({ title, category, description, price, image, rating });
@@ -17,24 +17,24 @@ Router.post("/addGame",authVerify, async (req, res) => {
         res.send(data);
     } else {
         res.send("enter all required feild")
-        console.log("enter all required feild") 
-    }   
+        console.log("enter all required feild")
+    }
 })
 
-Router.put("/updateGame/:id",authVerify, async (req, res) => {
+Router.put("/updateGame/:id", async (req, res) => {
     let id = req.params.id;
     let { title, category, description, price, image, rating } = req.body;
     if (title && category && description && price && image && rating) {
         let data = await Game.findByIdAndUpdate(id, { title, category, description, price, image, rating }, { new: true });
         console.log(data);
-        res.send(data)      
+        res.send(data)
     } else {
         res.send("enter all required feild")
         console.log("enter all required feild")
     }
 })
 
-Router.delete("/deleteGame/:id",authVerify, async (req, res) => {
+Router.delete("/deleteGame/:id", async (req, res) => {
     let id = req.params.id
     let data = await Game.findByIdAndDelete(id)
     console.log(data)

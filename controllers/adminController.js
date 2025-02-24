@@ -8,13 +8,13 @@ Router.get("/getAdmin", async (req, res) => {
         res.status(200).send(data);
         console.log(data);
     } catch (e) {
-        res.status(403).send('admin data is not getted sucessful',e)
+        res.status(403).send('admin data is not getted sucessful', e)
     }
 })
 
 Router.post("/addAdmin", async (req, res) => {
     console.log(req.body)
-    try{
+    try {
 
         Admin.findOne({ email: req.body.email }).then((admin) => {
             if (admin) {
@@ -25,12 +25,12 @@ Router.post("/addAdmin", async (req, res) => {
                     const round = 10;
                     const hashpassword = await bcrypt.hash(password, round)
                     return hashpassword
-            }
-            hashpassword(password)  
-            .then(hashed => {
-                    console.log("hashed passwood", hashed)
-                    req.body.password = hashed
-                });
+                }
+                hashpassword(password)
+                    .then(hashed => {
+                        console.log("hashed passwood", hashed)
+                        req.body.password = hashed
+                    });
             }
             Admin.create(req.body).then((data) => {
                 return res.status(201).send(data)
@@ -39,14 +39,14 @@ Router.post("/addAdmin", async (req, res) => {
                 res.status(500).send(`error ${err}`)
             })
         })
-    }catch(e){
-        res.status(403).send('admin is not Added sucessful',e)   
+    } catch (e) {
+        res.status(403).send('admin is not Added sucessful', e)
     }
 })
 
 Router.put("/updateadmin/:id", async (req, res) => {
     let id = req.params.id;
-    try{
+    try {
 
         let { name, email, password } = req.body;
         if (name && email && password) {
@@ -57,8 +57,8 @@ Router.put("/updateadmin/:id", async (req, res) => {
             res.send("enter all required feild")
             console.log("enter all required feild")
         }
-    }catch(e){
-        res.status(403).send('admin data is not Updated sucessful',e)
+    } catch (e) {
+        res.status(403).send('admin data is not Updated sucessful', e)
     }
 })
 
