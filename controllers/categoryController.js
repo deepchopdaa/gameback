@@ -3,13 +3,13 @@ const Router = express.Router();
 const category = require("../models/Category.js");
 const authVerify = require('../middleware/authMiddleware.js')
 
-Router.get("/getcategory",authVerify, async (req, res) => {
+Router.get("/getcategory", async (req, res) => {
     let data = await category.find();
     res.send(data);
     console.log(data);
 })
 
-Router.post("/addcategory",authVerify, async (req, res) => {
+Router.post("/addcategory", async (req, res) => {
     let { name, description } = req.body;
     if (name && description) {
         let data = await category.create({ name, description });
@@ -21,9 +21,9 @@ Router.post("/addcategory",authVerify, async (req, res) => {
     }
 })
 
-Router.put("/updatecategory/:id",authVerify, async (req, res) => {
+Router.put("/updatecategory/:id", async (req, res) => {
     let id = req.params.id;
-    let { name, description } = req.body;
+    let { name, description } = req.body;   
     if (name && description) {
         let data = await category.findByIdAndUpdate(id, { name, description }, { new: true });
         console.log(data);
@@ -34,7 +34,7 @@ Router.put("/updatecategory/:id",authVerify, async (req, res) => {
     }
 })
 
-Router.delete("/deletecategory/:id",authVerify, async (req, res) => {
+Router.delete("/deletecategory/:id", async (req, res) => {
     let id = req.params.id;
     let data = await category.findByIdAndDelete(id);
     console.log(data);
