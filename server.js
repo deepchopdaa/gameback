@@ -22,6 +22,7 @@ app.use(express.json());
 /* file multer */
 app.use('/uploads', express.static('uploads'));
 /* all api route */
+<<<<<<< HEAD
 app.use('/admin',adminRoute)
 app.use('/auth',authRoute)
 app.use('/category',categoryRoute)
@@ -34,3 +35,17 @@ app.use('/send',SendMail)
 app.listen(3100, () => {
     console.log("app is running on 3100 port")
 })  
+=======
+app.use('/admin', adminRoute)
+app.use('/auth', authRoute)
+app.use('/category', categoryRoute)
+app.use('/game', gameRoute)
+app.use('/payment', PaymentRoute)
+app.use('/review', reviewRoute)
+app.use('/ticket', ticketRoute)
+app.use('/user', userRoute)
+app.use('/send', SendMail)
+app.listen(3100, () => {
+    console.log("app is running on 3100 port")
+}) 
+>>>>>>> e5dca202d1c6dcc454771300e87ea62a6876849c

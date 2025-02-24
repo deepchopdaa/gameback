@@ -11,6 +11,7 @@ Router.get("/getAdmin", async (req, res) => {
         console.log(data);
     } catch (e) {
         res.status(403).send('admin data is not getted sucessful', e)
+        res.status(403).send('admin data is not getted sucessful', e)
     }
 })
 
