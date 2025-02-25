@@ -10,7 +10,7 @@ const GameSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Category'
     },
-    descrption: {
+    description: {
         type: String,
         require: true
     },

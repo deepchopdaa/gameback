@@ -4,19 +4,15 @@ const Game = require("../models/Game.js")
 const authVerify = require('../middleware/authMiddleware.js')
 const fs = require("fs")
 const upload = require("../middleware/uploadMiddleware.js")
-Router.get("/getGame", async (req, res) => {
-    let data = await Game.find();
-    res.send(data);
-    console.log(data);
-})
 
-Router.post("/addGame", async (req, res) => {
+
+/* Router.post("/addGame", async (req, res) => {
     let { title, category, description, price, image, rating } = req.body;
     if (title && category && description && price && image && rating) {
         let data = await Game.create({ title, category, description, price, image, rating });
 const path = require("path")
 const { ifError } = require("assert");
-const { error } = require("console");
+const { error } = require("console"); */
 
 
 Router.get("/getGame", async (req, res) => {
@@ -24,15 +20,9 @@ Router.get("/getGame", async (req, res) => {
         let data = await Game.find();
         res.status(200).send(data);
         console.log(data);
-        res.send(data);
-    } else {
-        res.send("enter all required feild")
-        console.log("enter all required feild")
-    }
-})
     } catch (e) {
         console.log(e)
-        res.status(500).json({  
+        res.status(500).json({
             error: "server error"
         })
     }
@@ -42,7 +32,7 @@ Router.post("/addGame", upload.single('image'), async (req, res) => {
     try {
         let { title, category, description, price, rating } = req.body;
         console.log(req.body)
-        if (!title || !category || !description || !price || !rating ) {
+        if (!title || !category || !description || !price || !rating) {
             console.log("enter require field")
             return res.status(400).json({ error: "Enter all required fields" });
         }
@@ -52,10 +42,9 @@ Router.post("/addGame", upload.single('image'), async (req, res) => {
             description,
             price,
             image: req.file.path, // Store file path
-            rating, 
+            rating,
         });
         res.status(201).json(newGame);
-
     } catch (e) {
         console.log(e)
         res.status(500).json({
@@ -64,33 +53,28 @@ Router.post("/addGame", upload.single('image'), async (req, res) => {
     }
 })
 
-Router.put("/updateGame/:id", async (req, res) => {
-    let id = req.params.id;
-    let { title, category, description, price, image, rating } = req.body;
-    if (title && category && description && price && image && rating) {
-        let data = await Game.findByIdAndUpdate(id, { title, category, description, price, image, rating }, { new: true });
-        console.log(data);
-        res.send(data)
-    } else {
-        res.send("enter all required feild")
-        console.log("enter all required feild")
-    }
+
 Router.put("/updateGame/:id", upload.single('image'), async (req, res) => {
     try {
         let id = req.params.id;
+        console.log(id)
         let { title, category, description, price, rating } = req.body;
+        console.log(title, category, description, price, rating, "title, category, description, price, image: updateImage, rating")
         if (!title || !category || !description || !price || !rating) {
             return res.status(400).json({ error: "Enter all Required Field" })
         }
-        let existringGame = await Game.findByid(id);
+        let existringGame = await Game.findByIdAndUpdate(id);
         if (!existringGame) {
             return res.status(400).json({
                 error: "Game not Found"
             })
         }
+        console.log(existringGame.image);
         let updateImage = existringGame.image
         if (req.file) {
+            console.log(req.file + "|fdfgdrgrdgrdg")
             updateImage = req.file.path;
+            console.log(updateImage, "fsfesfs")
             if (existringGame.image) {
                 fs.unlink(existringGame.image, (err) => {
                     if (!err) console.log("Error old image delete :", err);
@@ -99,52 +83,37 @@ Router.put("/updateGame/:id", upload.single('image'), async (req, res) => {
         }
         let updateGame = await Game.findByIdAndUpdate(id, { title, category, description, price, image: updateImage, rating }, { new: true })
         res.status(200).json(updateGame)
-    }catch(e){
+    } catch (e) {
         console.log(e)
         res.status(500).json({
-            error:"server error"
+            error: "server error"
         })
     }
 
-    // let id = req.params.id;
-    // let { title, category, description, price, image, rating } = req.body;
-    // if (title && category && description && price && image && rating) {
-    //     let data = await Game.findByIdAndUpdate(id, { title, category, description, price, image, rating }, { new: true });
-    //     console.log(data);
-    //     res.send(data)
-    // } else {
-    //     res.send("enter all required feild")
-    //     console.log("enter all required feild")
-    // }
 })
 
 Router.delete("/deleteGame/:id", async (req, res) => {
-    let id = req.params.id
-Router.delete("/deleteGame/:id", async (req, res) => {
-    try{
-        let id =req.params.id
-        let { title, category, description, price, rating } = req.body;
-        if (!title || !category || !description || !price || !rating) {
-            return res.status(400).json({ error: "Enter all Required Field" })
-        }
+    try {
+        let id = req.params.id
+        console.log(req.body)
         let deleteimage = req.file.path
-        if(deleteimage){
-            fs.unlink(deleteimage,(e)=>{
-                console.log("Error image Delete",e)
+        if (deleteimage) {
+            fs.unlink(deleteimage, (e) => {
+                console.log("Error image Delete", e)
             })
         }
         let DeleteGame = await Game.findByIdAndDelete(id)
         res.status(200).json(DeleteGame)
-    }catch(e){
+    } catch (e) {
         console.log(e)
         res.status(500).json({
-            error:"server error"
+            error: "server error"
         })
     }
- /*    let id = req.params.id
-    let data = await Game.findByIdAndDelete(id)
-    console.log(data)
-    res.send(data) */
+    /*    let id = req.params.id
+       let data = await Game.findByIdAndDelete(id)
+       console.log(data)
+       res.send(data) */
 })
 
 module.exports = Router
