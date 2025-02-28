@@ -16,6 +16,7 @@ const reviewRoute = require('./controllers/reviewController.js')
 const ticketRoute = require('./controllers/ticketController.js')
 const userRoute = require('./controllers/userController.js')
 const SendMail = require('./controllers/SendMail.js');
+const Contact = require('./controllers/contact.js')
 const PORT = process.env.PORT
 app.use(cors());
 app.use(express.json());
@@ -31,6 +32,7 @@ app.use('/review',reviewRoute)
 app.use('/ticket',ticketRoute)
 app.use('/user',userRoute)  
 app.use('/send',SendMail)
+app.use('/contact',Contact)
 app.listen(3100, () => {
     console.log("app is running on 3100 port")
 })  

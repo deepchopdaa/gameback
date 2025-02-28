@@ -2,18 +2,9 @@ const express = require("express");
 const Router = express.Router();
 const Game = require("../models/Game.js")
 const authVerify = require('../middleware/authMiddleware.js')
+const path = require("path")
 const fs = require("fs")
 const upload = require("../middleware/uploadMiddleware.js")
-
-
-/* Router.post("/addGame", async (req, res) => {
-    let { title, category, description, price, image, rating } = req.body;
-    if (title && category && description && price && image && rating) {
-        let data = await Game.create({ title, category, description, price, image, rating });
-const path = require("path")
-const { ifError } = require("assert");
-const { error } = require("console"); */
-
 
 Router.get("/getGame", async (req, res) => {
     try {
@@ -50,70 +41,99 @@ Router.post("/addGame", upload.single('image'), async (req, res) => {
         res.status(500).json({
             error: "server error"
         })
-    }
+    } s
 })
 
+/* const fs = require("fs");
+const path = require("path");
+const express = require("express");
+const Router = express.Router();
+const upload = require("../middleware/upload"); // Ensure correct path for Multer middleware
+const Game = require("../models/Game"); // Adjust the path based on your project structure */
 
-Router.put("/updateGame/:id", upload.single('image'), async (req, res) => {
+Router.put("/updateGame/:id", upload.single("image"), async (req, res) => {
     try {
         let id = req.params.id;
-        console.log(id)
+        console.log("Update Request for ID:", id);
+        console.log(req.body)
         let { title, category, description, price, rating } = req.body;
-        console.log(title, category, description, price, rating, "title, category, description, price, image: updateImage, rating")
         if (!title || !category || !description || !price || !rating) {
-            return res.status(400).json({ error: "Enter all Required Field" })
+            return res.status(400).json({ error: "Enter all required fields" });
         }
-        let existringGame = await Game.findByIdAndUpdate(id);
-        if (!existringGame) {
-            return res.status(400).json({
-                error: "Game not Found"
-            })
+
+        // Step 1: Find the existing game
+        let existingGame = await Game.findById(id);
+        if (!existingGame) {
+            return res.status(404).json({ error: "Game not found" });
         }
-        console.log(existringGame.image);
-        let updateImage = existringGame.image
+
+        console.log("Existing Game Image:", existingGame.image);
+
+        // Step 2: Manage Image (Delete Old One if New One is Uploaded)
+        let updatedImage = existingGame.image; // Keep old image if no new image is uploaded
+
         if (req.file) {
-            console.log(req.file + "|fdfgdrgrdgrdg")
-            updateImage = req.file.path;
-            console.log(updateImage, "fsfesfs")
-            if (existringGame.image) {
-                fs.unlink(existringGame.image, (err) => {
-                    if (!err) console.log("Error old image delete :", err);
-                })
+            updatedImage = req.file.path; // New uploaded image path
+
+            // Delete old image if it exists
+            if (existingGame.image) {
+                const oldImagePath = path.join(__dirname, "../", existingGame.image); // Ensure correct path
+                fs.unlink(oldImagePath, (err) => {
+                    if (err) {
+                        console.error("Error deleting old image:", err);
+                    } else {
+                        console.log("Old image deleted successfully:", oldImagePath);
+                    }
+                });
             }
         }
-        let updateGame = await Game.findByIdAndUpdate(id, { title, category, description, price, image: updateImage, rating }, { new: true })
-        res.status(200).json(updateGame)
-    } catch (e) {
-        console.log(e)
-        res.status(500).json({
-            error: "server error"
-        })
-    }
 
-})
+        // Step 3: Update game details in the database
+        let updatedGame = await Game.findByIdAndUpdate(
+            id,
+            { title, category, description, price, rating, image: updatedImage },
+            { new: true } // Returns updated document
+        );
+
+        res.status(200).json({ message: "Game updated successfully", updatedGame });
+    } catch (error) {
+        console.error("Error updating game:", error);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+module.exports = Router;
 
 Router.delete("/deleteGame/:id", async (req, res) => {
     try {
-        let id = req.params.id
-        console.log(req.body)
-        let deleteimage = req.file.path
-        if (deleteimage) {
-            fs.unlink(deleteimage, (e) => {
-                console.log("Error image Delete", e)
-            })
+        let id = req.params.id;
+        console.log("Delete request received for ID:", id);
+
+        // Step 1: Find the game by ID
+        let game = await Game.findById(id);
+        if (!game) {
+            return res.status(404).json({ error: "Game not found" });
         }
-        let DeleteGame = await Game.findByIdAndDelete(id)
-        res.status(200).json(DeleteGame)
-    } catch (e) {
-        console.log(e)
-        res.status(500).json({
-            error: "server error"
-        })
+
+        // Step 2: Delete the associated image (if exists)
+        if (game.image) {
+            let imagePath = path.join(__dirname, "../uploads", game.image); // Adjust the path accordingly
+            fs.unlink(imagePath, (err) => {
+                if (err) {
+                    console.error("Error deleting image:", err);
+                } else {
+                    console.log("Image deleted successfully:", imagePath);
+                }
+            });
+        }
+        // Step 3: Delete the game record from the database
+        let deletedGame = await Game.findByIdAndDelete(id);
+
+        res.status(200).json({ message: "Game deleted successfully", deletedGame });
+    } catch (error) {
+        console.error("Error deleting game:", error);
+        res.status(500).json({ error: "Server error" });
     }
-    /*    let id = req.params.id
-       let data = await Game.findByIdAndDelete(id)
-       console.log(data)
-       res.send(data) */
-})
+});
 
 module.exports = Router

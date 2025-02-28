@@ -36,7 +36,7 @@ Router.post("/register", async (req, res) => {
     }
 })
 
-Router.post('/login', async (req, res) => {
+Router.post('/login', async (req, res) => { 
     console.log(req.body)
     try{
         User.findOne({ email: req.body.email }).then((user) => {
