@@ -11,7 +11,6 @@ Router.get("/getAdmin", async (req, res) => {
         console.log(data);
     } catch (e) {
         res.status(403).send('admin data is not getted sucessful', e)
-        res.status(403).send('admin data is not getted sucessful', e)
     }
 })
 
@@ -64,7 +63,6 @@ Router.put("/updateadmin/:id", async (req, res) => {
         res.status(403).send('admin data is not Updated sucessful', e)
     }
 })
-
 
 Router.post('/login', async (req, res) => {
     console.log(req.body)

@@ -12,7 +12,7 @@ Router.get("/getticket", async (req, res) => {
 Router.post("/addticket", async (req, res) => {
     let { user_id, Game_id, price } = req.body;
     if (user_id && Game_id && price) {
-        let data = await Ticket.create({ user_id, Game_id, price });
+        let data = await Ticket.create({ user_id, Game_id, amount,SeatNumber });
         console.log(data);
         res.send(data);
     } else {
@@ -25,10 +25,10 @@ Router.put("/updateticket/:id", async (req, res) => {
     let id = req.params.id;
     let { user_id, Game_id, price } = req.body;
     if (user_id && Game_id && price) {
-        let data = await Ticket.findByIdAndUpdate(id, { user_id, Game_id, price }, { new: true });
-        console.log(data);
+        let data = await Ticket.findByIdAndUpdate(id, { user_id, Game_id, amount,SeatNumber }, { new: true });
+        console.log(data); 
         res.send(data)
-    } else {
+    } else {    
         res.send("enter all required feild")
         console.log("enter all required feild")
     }

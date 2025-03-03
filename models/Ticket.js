@@ -9,10 +9,14 @@ const TicketSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Game'
     },
-    price:{
+    amount:{
         type:Number,
         require:true
-    }
+    },
+    SeatNumber:{
+        type:Number,
+        require:true
+    },
 })
 
 const Ticket = mongoose.model('Ticket', TicketSchema);

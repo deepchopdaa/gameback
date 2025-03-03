@@ -6,7 +6,6 @@ const Contact = require("../models/Contact.js");
 // Middleware for authentication (if required)
 const authVerify = require('../middleware/authMiddleware.js');
 
-
 Router.get("/getcontact", async (req, res) => {
     try {
         const data = await Contact.find();
@@ -20,7 +19,7 @@ Router.get("/getcontact", async (req, res) => {
 Router.post("/addcontact", async (req, res) => {
     try {
         const { name, number, email, description } = req.body;
-        if (!name || !number || !email || !description) {s
+        if (!name || !number || !email || !description) {
             return res.status(400).json({ error: "All fields are required" });
         }
         const newContact = await Contact.create({ name, number, email, description });
@@ -40,8 +39,8 @@ Router.post("/addcontact", async (req, res) => {
             // send mail with defined transport object
             const info = await transporter.sendMail({
                 from: '"Deep Chopda" <deepchopda01@gmail.com>', // sender address
-                to: "deep3254c@gmail.com", // list of receivers
-                subject: "Request", // Subject line
+                to: `${email}`, // list of receivers
+                subject: "Contect", // Subject line
                 text: "Request Submit", // plain text body
                 html: `<h2>Your Contect form submited successfully</h2>`, // html body
             });
