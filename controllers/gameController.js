@@ -9,7 +9,6 @@ const upload = require("../middleware/uploadMiddleware.js")
 Router.get("/getGame", async (req, res) => {
     try {
         let data = await Game.find();
-        res.status(200).send(data);
         console.log(data);
     } catch (e) {
         console.log(e)
@@ -44,12 +43,6 @@ Router.post("/addGame", upload.single('image'), async (req, res) => {
     } s
 })
 
-/* const fs = require("fs");
-const path = require("path");
-const express = require("express");
-const Router = express.Router();
-const upload = require("../middleware/upload"); // Ensure correct path for Multer middleware
-const Game = require("../models/Game"); // Adjust the path based on your project structure */
 
 Router.put("/updateGame/:id", upload.single("image"), async (req, res) => {
     try {
