@@ -13,6 +13,10 @@ const UserSchema = mongoose.Schema({
     password:{
         type:String,
         require:true
+    },
+    status:{
+        type:String,
+        default:"active"
     }
 })
 

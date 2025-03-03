@@ -10,7 +10,7 @@ Router.get("/getreview", async (req, res) => {
 
 Router.post("/addreview", async (req, res) => {
     let { user_id, Game_id, rating, comment, date } = req.body;
-    if (user_id && Game_id && rating && comment) {  
+    if (user_id && Game_id && rating && comment) {
         let data = await Review.create({ user_id, Game_id, rating, comment, date });
         console.log(data);
         res.send(data);
@@ -32,6 +32,9 @@ Router.put("/updatereview/:id", async (req, res) => {
         console.log("enter all required feild")
     }
 })
+
+
+
 
 Router.delete("/deletereview/:id", async (req, res) => {
     let id = req.params.id;

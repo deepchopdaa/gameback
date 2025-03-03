@@ -3,13 +3,13 @@ const Router = express.Router();
 const Ticket = require("../models/Ticket.js");
 const authVerify = require('../middleware/authMiddleware.js')
 
-Router.get("/getticket",authVerify, async (req, res) => {
+Router.get("/getticket", async (req, res) => {
     let data = await Ticket.find();
     res.send(data);
     console.log(data);
 })
 
-Router.post("/addticket",authVerify, async (req, res) => {
+Router.post("/addticket", async (req, res) => {
     let { user_id, Game_id, price } = req.body;
     if (user_id && Game_id && price) {
         let data = await Ticket.create({ user_id, Game_id, price });
@@ -19,9 +19,9 @@ Router.post("/addticket",authVerify, async (req, res) => {
         res.send("enter all required feild")
         console.log("enter all required feild")
     }
-})
+})  
 
-Router.put("/updateticket/:id",authVerify, async (req, res) => {
+Router.put("/updateticket/:id", async (req, res) => {
     let id = req.params.id;
     let { user_id, Game_id, price } = req.body;
     if (user_id && Game_id && price) {
@@ -34,7 +34,7 @@ Router.put("/updateticket/:id",authVerify, async (req, res) => {
     }
 })
 
-Router.delete("/deleteticket/:id",authVerify, async (req, res) => {
+Router.delete("/deleteticket/:id", async (req, res) => {
     let id = req.params.id;
     let data = await Ticket.findByIdAndDelete(id);
     console.log(data);

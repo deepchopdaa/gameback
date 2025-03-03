@@ -10,13 +10,15 @@ Router.get("/getGame", async (req, res) => {
     try {
         let data = await Game.find();
         console.log(data);
+        res.send(data)
     } catch (e) {
         console.log(e)
         res.status(500).json({
             error: "server error"
-        })
+        })  
     }
 })
+
 
 Router.post("/addGame", upload.single('image'), async (req, res) => {
     try {
@@ -40,7 +42,7 @@ Router.post("/addGame", upload.single('image'), async (req, res) => {
         res.status(500).json({
             error: "server error"
         })
-    } s
+    } 
 })
 
 
