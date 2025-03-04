@@ -6,7 +6,7 @@ const path = require("path")
 const fs = require("fs")
 const upload = require("../middleware/uploadMiddleware.js")
 
-Router.get("/getGame", async (req, res) => {
+Router.get("/getGame",authVerify, async (req, res) => {
     try {
         let data = await Game.find();
         console.log(data);
@@ -20,7 +20,7 @@ Router.get("/getGame", async (req, res) => {
 })
 
 
-Router.post("/addGame", upload.single('image'), async (req, res) => {
+Router.post("/addGame",authVerify, upload.single('image'), async (req, res) => {
     try {
         let { title, category, description, price, rating } = req.body;
         console.log(req.body)
@@ -46,7 +46,7 @@ Router.post("/addGame", upload.single('image'), async (req, res) => {
 })
 
 
-Router.put("/updateGame/:id", upload.single("image"), async (req, res) => {
+Router.put("/updateGame/:id",authVerify, upload.single("image"), async (req, res) => {
     try {
         let id = req.params.id;
         console.log("Update Request for ID:", id);
@@ -99,7 +99,7 @@ Router.put("/updateGame/:id", upload.single("image"), async (req, res) => {
 
 module.exports = Router;
 
-Router.delete("/deleteGame/:id", async (req, res) => {
+Router.delete("/deleteGame/:id",authVerify, async (req, res) => {
     try {
         let id = req.params.id;
         console.log("Delete request received for ID:", id);

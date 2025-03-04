@@ -2,13 +2,13 @@ const express = require("express");
 const Router = express.Router();
 const Review = require("../models/Review.js");
 const authVerify = require('../middleware/authMiddleware.js')
-Router.get("/getreview", async (req, res) => {
+Router.get("/getreview",authVerify, async (req, res) => {
     let data = await Review.find();
     res.send(data);
     console.log(data);
 })
 
-Router.post("/addreview", async (req, res) => {
+Router.post("/addreview",authVerify, async (req, res) => {
     let { user_id, Game_id, rating, comment, date } = req.body;
     if (user_id && Game_id && rating && comment) {
         let data = await Review.create({ user_id, Game_id, rating, comment, date });
@@ -20,7 +20,7 @@ Router.post("/addreview", async (req, res) => {
     }
 })
 
-Router.put("/updatereview/:id", async (req, res) => {
+Router.put("/updatereview/:id",authVerify, async (req, res) => {
     let id = req.params.id;
     let { user_id, Game_id, rating, comment, date } = req.body;
     if (user_id && Game_id && rating && comment) {
@@ -33,10 +33,7 @@ Router.put("/updatereview/:id", async (req, res) => {
     }
 })
 
-
-
-
-Router.delete("/deletereview/:id", async (req, res) => {
+Router.delete("/deletereview/:id",authVerify, async (req, res) => {
     let id = req.params.id;
     let data = await Review.findByIdAndDelete(id);
     console.log(data);

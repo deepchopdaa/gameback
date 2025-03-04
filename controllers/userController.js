@@ -1,14 +1,15 @@
 const express = require("express");
 const Router = express.Router();
 const User = require("../models/User.js");
+const authVerify = require('../middleware/authMiddleware.js')
 
-Router.get("/getuser", async (req, res) => {
+Router.get("/getuser",authVerify, async (req, res) => {
     let data = await User.find();
     res.send(data);
     console.log(data);
-})
+}) 
 
-Router.put("/updateuser/:id", async (req, res) => {
+Router.put("/updateuser/:id",authVerify,async (req, res) => {
     let id = req.params.id
     let { name, email, password } = req.body;
     if (name && email && password) {
@@ -21,7 +22,7 @@ Router.put("/updateuser/:id", async (req, res) => {
     }
 })
 
-Router.put("/updatestatus/:id", async (req, res) => {
+Router.put("/updatestatus/:id",authVerify, async (req, res) => {
     let id = req.params.id;
     console.log(id , "dgggggggggggtdhtdh");
     try {
@@ -32,7 +33,7 @@ Router.put("/updatestatus/:id", async (req, res) => {
             console.log(user)
         }
         console.log(user.status)
-        user.status = user.status === "active" ? "Inactive" : "active";
+        user.status = user.status === "Inactive" ? "active" : "Inactive";
         console.log(user.status)
 
         res.status(200).send(user)
@@ -41,7 +42,7 @@ Router.put("/updatestatus/:id", async (req, res) => {
     }
 })
 
-Router.delete("/deleteuser/:id", async (req, res) => {
+Router.delete("/deleteuser/:id",authVerify, async (req, res) => {
     let id = req.params.id;
     let data = await User.findByIdAndDelete(id);
     console.log(data);

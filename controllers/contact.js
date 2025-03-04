@@ -6,7 +6,7 @@ const Contact = require("../models/Contact.js");
 // Middleware for authentication (if required)
 const authVerify = require('../middleware/authMiddleware.js');
 
-Router.get("/getcontact", async (req, res) => {
+Router.get("/getcontact",authVerify, async (req, res) => {
     try {
         const data = await Contact.find();
         res.status(200).json(data);
@@ -16,7 +16,7 @@ Router.get("/getcontact", async (req, res) => {
     }
 });
 
-Router.post("/addcontact", async (req, res) => {
+Router.post("/addcontact",authVerify, async (req, res) => {
     try {
         const { name, number, email, description } = req.body;
         if (!name || !number || !email || !description) {
@@ -55,15 +55,13 @@ Router.post("/addcontact", async (req, res) => {
 });
 
 
-Router.put("/updatecontact/:id", async (req, res) => {
+Router.put("/updatecontact/:id",authVerify, async (req, res) => {
     try {
         const { id } = req.params;
         const { name, number, email, description } = req.body;
-
         if (!name || !number || !email || !description) {
             return res.status(400).json({ error: "All fields are required" });
         }
-
         const existingContact = await Contact.findById(id);
         if (!existingContact) {
             return res.status(404).json({ error: "Contact not found" });
@@ -73,7 +71,6 @@ Router.put("/updatecontact/:id", async (req, res) => {
             { name, number, email, description },
             { new: true }
         );
-
         console.log("Contact Updated:", updatedContact);
         res.status(200).json(updatedContact);
     } catch (error) {
@@ -82,7 +79,7 @@ Router.put("/updatecontact/:id", async (req, res) => {
     }
 });
 
-Router.delete("/deletecontact/:id", async (req, res) => {
+Router.delete("/deletecontact/:id",authVerify, async (req, res) => {
     try {
         const { id } = req.params;
         const contact = await Contact.findById(id);
