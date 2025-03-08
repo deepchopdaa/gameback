@@ -44,14 +44,14 @@ Router.post('/login', async (req, res) => {
             if(user){
                 const id = user._id
                 if (user.password === req.body.password) {
-                    jwt.sign({ id }, secrate_key, { expiresIn: '1h' }, (err, token) => {
+                    jwt.sign({ id }, secrate_key, { expiresIn: "24h" }, (err, token) => {
                         res.json({ token })
                     })
                 } else {
                     return res.send("password is incorrect")
                 }
             }else{
-                return res.send("User Not Found")
+                return res.send("User Not Found")   
             }
         }).catch(() => {
             return res.send("user not found");

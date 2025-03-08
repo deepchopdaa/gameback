@@ -1,8 +1,14 @@
 const express = require("express");
 const Router = express.Router();
 const Review = require("../models/Review.js");
-const authVerify = require('../middleware/authMiddleware.js')
+const authVerify = require('../middleware/authMiddleware.js');
+const userVerify = require("../middleware/UserMiddleware.js");
 Router.get("/getreview",authVerify, async (req, res) => {
+    let data = await Review.find();
+    res.send(data);
+    console.log(data);
+})
+Router.get("/getuserreview",userVerify, async (req, res) => {
     let data = await Review.find();
     res.send(data);
     console.log(data);

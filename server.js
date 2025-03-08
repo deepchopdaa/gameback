@@ -17,6 +17,7 @@ const ticketRoute = require('./controllers/ticketController.js')
 const userRoute = require('./controllers/userController.js')
 const SendMail = require('./controllers/SendMail.js');
 const Contact = require('./controllers/contact.js')
+const UserPenel = require("./controllers/UserPenel.js")
 const PORT = process.env.PORT
 app.use(cors());
 app.use(express.json());
@@ -27,6 +28,7 @@ app.use('/admin',adminRoute)
 app.use('/auth',authRoute)
 app.use('/category',categoryRoute)
 app.use('/game',gameRoute)
+app.use('/userpenel',UserPenel)
 app.use('/payment',PaymentRoute)
 app.use('/review',reviewRoute)
 app.use('/ticket',ticketRoute)
