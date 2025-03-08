@@ -4,9 +4,22 @@ const Game = require("../models/Game.js")
 const authVerify = require('../middleware/authMiddleware.js')
 const path = require("path")
 const fs = require("fs")
-const upload = require("../middleware/uploadMiddleware.js")
+const upload = require("../middleware/uploadMiddleware.js");
+const userVerify = require("../middleware/UserMiddleware.js");
 
 Router.get("/getGame",authVerify, async (req, res) => {
+    try {
+        let data = await Game.find();
+        console.log(data);
+        res.send(data)
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({
+            error: "server error"
+        })  
+    }
+})
+Router.get("/getUserGame",userVerify, async (req, res) => {
     try {
         let data = await Game.find();
         console.log(data);

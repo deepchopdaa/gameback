@@ -25,35 +25,39 @@ Router.post("/register", async (req, res) => {
                     });
             }
             User.create(req.body).then((data) => {
-                res.status(201).send(data)
+                return res.status(201).send(data)
             }).catch((err) => {
                 console.log(err);
-                res.status(500).send(`error ${err}`)
+                return res.status(500).send(`error ${err}`)
             })
         })
     }catch(e){
-        res.status(403).send('user data is not Added sucessful',e)
+        return res.status(403).send('user data is not Added sucessful',e)
     }
 })
 
 Router.post('/login', async (req, res) => { 
     console.log(req.body)
+    const {email} =req.body; 
     try{
-        User.findOne({ email: req.body.email }).then((user) => {
-            console.log(user)
-            const id = user._id
-            if (user.password === req.body.password) {
-                jwt.sign({ id }, secrate_key, { expiresIn: '1h' }, (err, token) => {
-                    res.json({ token })
-                })
-            } else {
-                res.send("password is incorrect")
+        await User.findOne({ email: email }).then((user) => {
+            if(user){
+                const id = user._id
+                if (user.password === req.body.password) {
+                    jwt.sign({ id }, secrate_key, { expiresIn: '1h' }, (err, token) => {
+                        res.json({ token })
+                    })
+                } else {
+                    return res.send("password is incorrect")
+                }
+            }else{
+                return res.send("User Not Found")
             }
         }).catch(() => {
-            res.send("user not found");
+            return res.send("user not found");
         })
     }catch{
-        res.status(403).send('User Not LogIn sucessfully',e)
+        return res.status(403).send('User Not LogIn sucessfully',e)
     }
 })
 

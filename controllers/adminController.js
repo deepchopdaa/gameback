@@ -71,18 +71,18 @@ Router.post('/login', async (req, res) => {
             console.log(admin, "admin")
             const id = admin._id
             if (admin.password === req.body.password) {
-                jwt.sign({ id }, secrate_key, { expiresIn: '60min' }, (err, token) => {
+                jwt.sign({ id }, secrate_key, { expiresIn: '24h' }, (err, token) => {
                     console.log(token)  
-                    res.json({ token })     
+                    return res.json({ token })     
                 })
             } else {
-                res.send("password is incorrect")
-            }   
+                return res.send("password is incorrect")
+            }       
         }).catch(() => {
-            res.send("user not found");
+            return res.send("user not found");
         })
     } catch (e) {
-        res.send('User Not LogIn sucessfully')
+        return res.send('User Not LogIn sucessfully')
     }
 })
 

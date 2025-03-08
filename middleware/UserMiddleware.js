@@ -1,7 +1,7 @@
-const Admin = require("../models/Admin.js");
+const user = require("../models/User.js");
 const jwt = require("jsonwebtoken")
 const secrate_key = "secratekey"
-const verifytoken = async (req, res, next) => {
+const userVerify = async (req, res, next) => {
     const bearerHeader = req.headers.authorization
     console.log(req.headers, "req.headersreq.headers")
     console.log(bearerHeader, "bearerHeaderbearerHeader")
@@ -14,14 +14,15 @@ const verifytoken = async (req, res, next) => {
         const verify = jwt.verify(token, secrate_key)
         if (verify) {
             console.log(verify , "<------verify-------->")
-            Admin.findOne({ _id: verify.id }).then((user1) => {
+            user.findOne({ _id: verify.id }).then((user1) => {
                 if (user1) {
-                    console.log(user1, "<------------------Admin data ----------------->")
+                    console.log(user1, "<------------------user data ----------------->")
                     return next();
                 }else{
-                    console.log("Admin Not Found")                }
+                    console.log("user Not Found")
+                }
             }).catch((e) => {
-                console.log("Admin Not Found", e)
+                console.log("User Not Found", e)
             })
         } else {
             console.log("data not found")
@@ -33,4 +34,4 @@ const verifytoken = async (req, res, next) => {
     };
 }
 
-module.exports = verifytoken
+module.exports = userVerify
