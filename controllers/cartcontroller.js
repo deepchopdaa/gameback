@@ -4,6 +4,7 @@ const Cart = require("../models/Cart.js");
 const authVerify = require('../middleware/authMiddleware.js');
 const userVerify = require("../middleware/UserMiddleware.js");
 
+
 Router.get("/getcart", userVerify, async (req, res) => {
     let user = req.user;
     let id = user.id

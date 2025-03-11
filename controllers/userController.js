@@ -9,6 +9,33 @@ Router.get("/getuser",authVerify, async (req, res) => {
     console.log(data);
 }) 
 
+/* smaple code */
+
+
+/* Router.get("/getuser", authVerify, async (req, res) => {
+    try {
+        const userData = await User.find()
+        if (userData.length > 0) {
+            return res.json({
+                status: 400,
+                user: userData
+            })
+        } else {
+            return res.json({
+                status: 400,
+                message: 'user data not available'
+            })
+        }
+    } catch (error) {
+        console.log(error, "get user error")
+        return res.json({
+            status: 500,
+            messaage: "internal server error "
+        })
+    }
+}) */
+
+
 Router.put("/updateuser/:id",authVerify,async (req, res) => {
     let id = req.params.id
     let { name, email, password } = req.body;

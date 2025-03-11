@@ -7,7 +7,7 @@ const fs = require("fs")
 const upload = require("../middleware/uploadMiddleware.js");
 const userVerify = require("../middleware/UserMiddleware.js");
 
-Router.get("/getGame",authVerify, async (req, res) => {
+Router.get("/getGame", authVerify, async (req, res) => {
     try {
         let data = await Game.find();
         console.log(data);
@@ -16,10 +16,43 @@ Router.get("/getGame",authVerify, async (req, res) => {
         console.log(e)
         res.status(500).json({
             error: "server error"
-        })  
+        })
     }
 })
-Router.get("/getUserGame",userVerify, async (req, res) => {
+
+/* for add To Cart Menu */
+Router.post("/getcartGame", async (req, res) => {
+    try {
+        const { gameIds } = req.body; // Extract gameIds array from request body
+        console.log(gameIds, "Games id");
+        console.log(req.body, "req body");
+
+        if (!Array.isArray(gameIds) || gameIds.length === 0) {
+            return res.status(400).json({ error: "Invalid or empty gameIds array" });
+        }
+
+        // Fetch all matching records
+        let data = await Game.find({ _id: { $in: gameIds } });
+
+        // Ensure the response matches the exact gameIds count (including duplicates)
+        const gameMap = data.reduce((acc, game) => {
+            acc[game._id.toString()] = game; // Store each game by ID
+            return acc;
+        }, {});
+
+        const orderedData = gameIds.map(id => gameMap[id] || null); // Preserve order & duplicates
+
+        console.log(orderedData, "Ordered Games Data");
+        res.json(orderedData);
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+
+/* for Game Detail */
+Router.get("/getUserGame", userVerify, async (req, res) => {
     try {
         let data = await Game.find();
         console.log(data);
@@ -28,12 +61,12 @@ Router.get("/getUserGame",userVerify, async (req, res) => {
         console.log(e)
         res.status(500).json({
             error: "server error"
-        })  
+        })
     }
 })
 
 
-Router.post("/addGame",authVerify, upload.single('image'), async (req, res) => {
+Router.post("/addGame", authVerify, upload.single('image'), async (req, res) => {
     try {
         let { title, category, description, price, rating } = req.body;
         console.log(req.body)
@@ -55,11 +88,11 @@ Router.post("/addGame",authVerify, upload.single('image'), async (req, res) => {
         res.status(500).json({
             error: "server error"
         })
-    } 
+    }
 })
 
 
-Router.put("/updateGame/:id",authVerify, upload.single("image"), async (req, res) => {
+Router.put("/updateGame/:id", authVerify, upload.single("image"), async (req, res) => {
     try {
         let id = req.params.id;
         console.log("Update Request for ID:", id);
@@ -112,7 +145,7 @@ Router.put("/updateGame/:id",authVerify, upload.single("image"), async (req, res
 
 module.exports = Router;
 
-Router.delete("/deleteGame/:id",authVerify, async (req, res) => {
+Router.delete("/deleteGame/:id", authVerify, async (req, res) => {
     try {
         let id = req.params.id;
         console.log("Delete request received for ID:", id);
