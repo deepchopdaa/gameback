@@ -14,14 +14,12 @@ Router.get("/getticket", authVerify, async (req, res) => {
 Router.post("/addticket", async (req, res) => {
     try {
         const { user_id, Game_id, amount, SeatNumber } = req.body;
-
         if (!user_id || !Game_id || !amount || !SeatNumber) {
             return res.status(400).json({ error: "All fields are required" });
         }
-
         let data = await Ticket.create({ user_id, Game_id, SeatNumber, amount });
         console.log("New Ticket Created:", data);
-        res.status(201).json(data);
+        res.status(201).json(data); 
     } catch (error) {
         console.error("Error creating ticket:", error);
         res.status(500).json({ error: "Server error" });
