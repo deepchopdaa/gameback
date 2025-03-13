@@ -17,6 +17,14 @@ const TicketSchema = mongoose.Schema({
         type:Number,
         require:true
     },
+    date:{
+        type:Date,
+        require:true
+    },
+    time_slot:{
+        type:String,
+        require:true
+    }
 })
 
 const Ticket = mongoose.model('Ticket', TicketSchema);

@@ -20,7 +20,11 @@ const cartSchema = mongoose.Schema({
     t_price:{
         type:Number,
         require:true
-    },  
+    },
+    date:{
+        type:Date,
+        require:true
+    },
     amount:{
         type:Number,
         require:true

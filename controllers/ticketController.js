@@ -13,14 +13,15 @@ Router.get("/getticket", authVerify, async (req, res) => {
 /* for Add To Cart Menu Record Insert */
 Router.post("/addticket", async (req, res) => {
     try {
-        const { user_id, Game_id, amount, SeatNumber } = req.body;
-        if (!user_id || !Game_id || !amount || !SeatNumber) {
+        console.log(req.body)
+        const { user_id, Game_id, amount, SeatNumber,date,time_slot } = req.body;
+        if (!user_id || !Game_id || !amount || !SeatNumber || !date || !time_slot) {
             return res.status(400).json({ error: "All fields are required" });
         }
-        let data = await Ticket.create({ user_id, Game_id, SeatNumber, amount });
+        let data = await Ticket.create({ user_id, Game_id, SeatNumber, amount ,date,time_slot });
         console.log("New Ticket Created:", data);
         res.status(201).json(data); 
-    } catch (error) {
+    } catch (error) {   
         console.error("Error creating ticket:", error);
         res.status(500).json({ error: "Server error" });
     }
