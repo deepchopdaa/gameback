@@ -1,13 +1,20 @@
 const express = require("express");
 const Router = express.Router();
 const User = require("../models/User.js");
-const authVerify = require('../middleware/authMiddleware.js')
+const authVerify = require('../middleware/authMiddleware.js');
+const userVerify = require("../middleware/UserMiddleware.js");
 
-Router.get("/getuser",authVerify, async (req, res) => {
+Router.get("/getuser", authVerify, async (req, res) => {
     let data = await User.find();
     res.send(data);
     console.log(data);
-}) 
+})
+
+Router.get("/getuserReview", userVerify, async (req, res) => {
+    let data = await User.find();
+    res.send(data);
+    console.log(data);
+})
 
 /* smaple code */
 
@@ -36,7 +43,7 @@ Router.get("/getuser",authVerify, async (req, res) => {
 }) */
 
 
-Router.put("/updateuser/:id",authVerify,async (req, res) => {
+Router.put("/updateuser/:id", authVerify, async (req, res) => {
     let id = req.params.id
     let { name, email, password } = req.body;
     if (name && email && password) {
@@ -49,14 +56,14 @@ Router.put("/updateuser/:id",authVerify,async (req, res) => {
     }
 })
 
-Router.put("/updatestatus/:id",authVerify, async (req, res) => {
+Router.put("/updatestatus/:id", authVerify, async (req, res) => {
     let id = req.params.id;
-    console.log(id , "dgggggggggggtdhtdh");
+    console.log(id, "dgggggggggggtdhtdh");
     try {
         let user = await User.findById(id)
         if (!user) {
             console.log("User not Found")
-        }else{
+        } else {
             console.log(user)
         }
         console.log(user.status)
@@ -69,7 +76,7 @@ Router.put("/updatestatus/:id",authVerify, async (req, res) => {
     }
 })
 
-Router.delete("/deleteuser/:id",authVerify, async (req, res) => {
+Router.delete("/deleteuser/:id", authVerify, async (req, res) => {
     let id = req.params.id;
     let data = await User.findByIdAndDelete(id);
     console.log(data);

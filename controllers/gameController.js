@@ -19,6 +19,20 @@ Router.get("/getGame", authVerify, async (req, res) => {
         })
     }
 })
+Router.get("/getCategoryGame/:id", userVerify, async (req, res) => {
+    try {
+        const id = req.params.id
+        let data = await Game.find({ category: id });
+        console.log(data);
+        console.log("< ------ Game Get By Category --- >")
+        res.send(data)
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({
+            error: "server error"
+        })
+    }
+})
 
 /* for add To Cart Menu */
 Router.post("/getcartGame", async (req, res) => {
@@ -56,6 +70,7 @@ Router.get("/getUserGame", userVerify, async (req, res) => {
     try {
         let data = await Game.find();
         console.log(data);
+        console.log("<------- All game getting ---->")
         res.send(data)
     } catch (e) {
         console.log(e)

@@ -3,18 +3,18 @@ const Router = express.Router();
 const Review = require("../models/Review.js");
 const authVerify = require('../middleware/authMiddleware.js');
 const userVerify = require("../middleware/UserMiddleware.js");
-Router.get("/getreview",authVerify, async (req, res) => {
+Router.get("/getreview", authVerify, async (req, res) => {
     let data = await Review.find();
     res.send(data);
     console.log(data);
 })
-Router.get("/getuserreview",userVerify, async (req, res) => {
+Router.get("/getuserreview", async (req, res) => {
     let data = await Review.find();
     res.send(data);
     console.log(data);
 })
 
-Router.post("/addreview",authVerify, async (req, res) => {
+Router.post("/addreview", authVerify, async (req, res) => {
     let { user_id, Game_id, rating, comment, date } = req.body;
     if (user_id && Game_id && rating && comment) {
         let data = await Review.create({ user_id, Game_id, rating, comment, date });
@@ -26,7 +26,7 @@ Router.post("/addreview",authVerify, async (req, res) => {
     }
 })
 
-Router.put("/updatereview/:id",authVerify, async (req, res) => {
+Router.put("/updatereview/:id", authVerify, async (req, res) => {
     let id = req.params.id;
     let { user_id, Game_id, rating, comment, date } = req.body;
     if (user_id && Game_id && rating && comment) {
@@ -39,7 +39,7 @@ Router.put("/updatereview/:id",authVerify, async (req, res) => {
     }
 })
 
-Router.delete("/deletereview/:id",authVerify, async (req, res) => {
+Router.delete("/deletereview/:id", authVerify, async (req, res) => {
     let id = req.params.id;
     let data = await Review.findByIdAndDelete(id);
     console.log(data);
