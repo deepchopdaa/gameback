@@ -9,7 +9,7 @@ Router.get("/getcategory", authVerify, async (req, res) => {
     res.send(data);
     console.log(data);
 })
-Router.get("/getusercategory", userVerify, async (req, res) => {
+Router.get("/getusercategory", async (req, res) => {
     let data = await category.find();
     res.send(data);
     console.log(data);

@@ -7,10 +7,12 @@ const fs = require("fs")
 const upload = require("../middleware/uploadMiddleware.js");
 const userVerify = require("../middleware/UserMiddleware.js");
 
-Router.get("/getGame", authVerify, async (req, res) => {
+Router.get("/getCategoryGame/:id", async (req, res) => {
     try {
-        let data = await Game.find();
+        const id = req.params.id
+        let data = await Game.find({ category: id });
         console.log(data);
+        console.log("< ------ Game Get By Category --- >")
         res.send(data)
     } catch (e) {
         console.log(e)
@@ -19,12 +21,16 @@ Router.get("/getGame", authVerify, async (req, res) => {
         })
     }
 })
-Router.get("/getCategoryGame/:id", userVerify, async (req, res) => {
+
+
+
+
+/* for Game Detail */
+Router.get("/getUserGame", async (req, res) => {
     try {
-        const id = req.params.id
-        let data = await Game.find({ category: id });
+        let data = await Game.find();
         console.log(data);
-        console.log("< ------ Game Get By Category --- >")
+        console.log("<------- All game getting ---->")
         res.send(data)
     } catch (e) {
         console.log(e)
@@ -64,13 +70,12 @@ Router.post("/getcartGame", async (req, res) => {
     }
 });
 
+/* Admin Route */
 
-/* for Game Detail */
-Router.get("/getUserGame", userVerify, async (req, res) => {
+Router.get("/getGame", authVerify, async (req, res) => {
     try {
         let data = await Game.find();
         console.log(data);
-        console.log("<------- All game getting ---->")
         res.send(data)
     } catch (e) {
         console.log(e)

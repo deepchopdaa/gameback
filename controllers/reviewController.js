@@ -13,6 +13,12 @@ Router.get("/getuserreview", async (req, res) => {
     res.send(data);
     console.log(data);
 })
+Router.get("/getGamereview/:id", async (req, res) => {
+    const id = req.params.id
+    let data = await Review.find({Game_id:id});
+    res.send(data);
+    console.log(data);
+})
 
 Router.post("/addreview", authVerify, async (req, res) => {
     let { user_id, Game_id, rating, comment, date } = req.body;
