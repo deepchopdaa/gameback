@@ -18,7 +18,6 @@ Router.get("/getuserReview", async (req, res) => {
 
 /* smaple code */
 
-
 /* Router.get("/getuser", authVerify, async (req, res) => {
     try {
         const userData = await User.find()
@@ -59,19 +58,15 @@ Router.get("/getuserReview", async (req, res) => {
 Router.put('/updatestatus/:id', authVerify, async (req, res) => {
     try {
         const userId = req.params.id;
-
         // Find the user by ID
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-
         // Toggle status (assuming it's "active" or "inactive")
-        user.status = user.status === 'active' ? 'inactive' : 'active';
-
+        user.status = user.status === 'active' ? 'inactive' : 'active'; 
         // Save the updated user
         await user.save();
-
         res.json({ message: 'Status updated successfully', status: user.status });
     } catch (error) {
         console.error('Error updating status:', error);

@@ -40,6 +40,21 @@ Router.get("/getUserGame", async (req, res) => {
     }
 })
 
+/* polulor  */
+Router.get("/getpopulor", async (req, res) => {
+    try {
+        let data = await Game.find().sort({price:-1}).limit(5);
+        console.log(data);
+        console.log("<------- All game getting ---->")
+        res.send(data)
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({
+            error: "server error"
+        })
+    }
+})
+
 /* for add To Cart Menu */
 Router.post("/getcartGame", async (req, res) => {
     try {

@@ -23,7 +23,6 @@ const userVerify = async (req, res, next) => {
                 req.user = findUser;
                 next();
             } else {
-
                 next({status :401, message :'Wrong authentication token'});
             }
         } else {

@@ -1,9 +1,17 @@
 const express = require("express");
 const Router = express.Router();
 const Admin = require("../models/Admin.js");
+
+const Category = require("../models/Category.js");
+const Contact = require("../models/Contact.js");
+const Game = require("../models/Game.js");
+const Review = require("../models/Review.js");
+const Ticket = require("../models/Ticket.js");
+const User = require("../models//User.js");
 const jwt = require("jsonwebtoken")
 const secrate_key = "secratekey"
 const bcrypt = require('bcrypt');
+
 Router.get("/getAdmin", async (req, res) => {
     try {
         let data = await Admin.find();
@@ -67,17 +75,17 @@ Router.put("/updateadmin/:id", async (req, res) => {
 Router.post('/login', async (req, res) => {
     console.log(req.body)
     try {
-        Admin.findOne({ email : req.body.email}).then((admin) => {
+        Admin.findOne({ email: req.body.email }).then((admin) => {
             console.log(admin, "admin")
             const id = admin._id
             if (admin.password === req.body.password) {
                 jwt.sign({ id }, secrate_key, { expiresIn: '24h' }, (err, token) => {
-                    console.log(token)  
-                    return res.json({ token })     
+                    console.log(token)
+                    return res.json({ token })
                 })
             } else {
                 return res.send("password is incorrect")
-            }       
+            }
         }).catch(() => {
             return res.send("user not found");
         })
@@ -86,4 +94,23 @@ Router.post('/login', async (req, res) => {
     }
 })
 
+Router.get("/getCount", async (req, res) => {
+    try {
+        const category = await Category.countDocuments({});
+        const contact = await Contact.countDocuments({});
+        const game = await Game.countDocuments({});
+        const review = await Review.countDocuments({});
+        const ticket = await Ticket.countDocuments({});
+        const user = await User.countDocuments({});
+        console.log(category, contact, game, review, ticket, user);
+        res.json({ category, contact, game, review, ticket, user });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
+
 module.exports = Router
+
+

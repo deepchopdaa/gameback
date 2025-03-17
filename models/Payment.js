@@ -21,7 +21,7 @@ const paymentSchema = mongoose.Schema({
         type:Date,
         default:Date.now
     }
-})
+},{ timestamps: true })
 
 const payment = mongoose.model('payment',paymentSchema);
 module.exports = payment;

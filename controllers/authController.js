@@ -26,7 +26,7 @@ Router.post("/register", async (req, res) => {
                     });
             }
             User.create(req.body).then((data) => {
-                const transporter = Nodemailer.createTransport({
+                const transporter = Nodemailer.createTransport({        
                     host: "smtp.ethereal.email",
                     service: 'gmail',
                     port: 465,
@@ -55,7 +55,6 @@ Router.post("/register", async (req, res) => {
                 return res.status(500).send(`error ${err}`)
             })
         })
-
     } catch (e) {
         return res.status(403).send('user data is not Added sucessful', e)
     }

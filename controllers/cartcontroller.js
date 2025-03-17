@@ -21,7 +21,7 @@ Router.post("/addcart", userVerify, async (req, res) => {
     const user = req.user;
     const user_id = user._id
 
-    if (!user_id || !Game_id || !amount || !ticket || !date || !time_slot) {
+    if (!user_id || !Game_id || !amount || !ticket || !date || !time_slot) {    
         console.log("Enter all required fields");
         return res.status(400).send("Enter all required fields");
     }
@@ -41,10 +41,9 @@ Router.post("/addcart", userVerify, async (req, res) => {
         } else {
             let data = await Cart.create({ user_id, Game_id, ticket, time_slot, t_price, date, amount });
             console.log(data);
-            return res.send(data);
+            return res.send("Your Game Add In Ticket Menu");
         }
     }
-
 })
 Router.put("/updatecart/:id", userVerify, async (req, res) => {
     let id = req.params.id;
@@ -63,9 +62,23 @@ Router.put("/updatecart/:id", userVerify, async (req, res) => {
 
 Router.delete("/deletecart/:id", userVerify, async (req, res) => {
     let id = req.params.id;
-    let data = await Cart.findByIdAndDelete(id);
+    let data = await Cart.findByIdAndDelete({ _id: id });
     console.log(data);
     res.send(data);
+})
+
+Router.delete("/Checkout", userVerify, async (req, res) => {
+    try {
+        let user = req.user;
+        console.log(user)
+        let id = user._id
+        console.log("User Id in Delete Cart", id)
+        let data = await Cart.deleteMany({ user_id: id });
+        console.log(data);
+        res.send(data);
+    } catch (e) {
+        console.log("Delete All item in Cart Error", e)
+    }
 })
 
 module.exports = Router
