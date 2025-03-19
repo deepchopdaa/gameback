@@ -13,9 +13,7 @@ Router.get("/getticket", authVerify, async (req, res) => {
     }catch(e){
         console.log("Getting Ticket Error" ,e)
     }
-    
 })
-
 
 /* for Add To Cart Menu Record Insert */
 Router.post("/addticket", userVerify, async (req, res) => {
@@ -47,13 +45,50 @@ Router.post("/addticket", userVerify, async (req, res) => {
             },
         });
         async function main() {
+            
+            const emailHTML = `
+            <div style="font-family: Arial, sans-serif; padding: 20px;">
+                <h2 style="text-align: center; color: #333;">🎟️ Your Ticket Booking Confirmation 🎟️</h2>
+                <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                    <tr style="background-color: #f2f2f2;">
+                        <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Details</th>
+                        <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Information</th>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 10px;">👤 Name</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">${username}</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 10px;">🎮 Game</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">${gamerecord.title}</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 10px;">💰 Amount</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">₹${amount}</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 10px;">📅 Date</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">${date}</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 10px;">🎟️ Seat Number</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">${SeatNumber}</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 10px;">⏰ Time Slot</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">${time_slot}</td>
+                    </tr>
+                </table>
+                <p style="text-align: center; margin-top: 20px;">Thank you for booking! Enjoy your game! 🎮</p>
+            </div>`;
+
             // send mail with defined transport object
             const info = await transporter.sendMail({
                 from: '"Deep Chopda" <deepchopda01@gmail.com>', // sender address
                 to: `${email}`, // list of receivers
                 subject: "Ticket System", // Subject line
                 text: "Booking Game", // plain text body
-                html: `<div><h2>Name  = ${username}</h2></br><h2>Game  = ${gamerecord.title}</h2></br><h2>Amount  = ${amount}</h2></br><h2>Date  = ${date}</h2></br><h2>Ticket  = ${SeatNumber}</h2></br><h2>Time Slot  = ${time_slot}</h2></br></div>`
+                html: emailHTML
             });
             console.log("Message sent: %s", info.messageId);
             // Message sent: <d786aa62-4e0a-070a-47ed-0b0666549519@ethereal.email>
