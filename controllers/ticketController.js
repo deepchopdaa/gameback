@@ -6,12 +6,12 @@ const authVerify = require('../middleware/authMiddleware.js')
 const Nodemailer = require("nodemailer");
 const userVerify = require("../middleware/UserMiddleware.js");
 Router.get("/getticket", authVerify, async (req, res) => {
-    try{
-        let data = await Ticket.find().sort({date:-1});
+    try {
+        let data = await Ticket.find().sort({ date: -1 });
         res.send(data);
         console.log(data);
-    }catch(e){
-        console.log("Getting Ticket Error" ,e)
+    } catch (e) {
+        console.log("Getting Ticket Error", e)
     }
 })
 
@@ -45,7 +45,7 @@ Router.post("/addticket", userVerify, async (req, res) => {
             },
         });
         async function main() {
-            
+
             const emailHTML = `
             <div style="font-family: Arial, sans-serif; padding: 20px;">
                 <h2 style="text-align: center; color: #333;">🎟️ Your Ticket Booking Confirmation 🎟️</h2>

@@ -9,20 +9,19 @@ const userVerify = require("../middleware/UserMiddleware.js");
 const Review = require("../models/Review.js")
 
 
-Router.get("/productDetail/:id", userVerify, async (req, res) => {
+Router.get("/productDetail/:id", async (req, res) => {
     try {
         console.log(req.params.id)
         let data = await Game.findById(req.params.id);
         console.log(data);
         res.send(data)
-    } catch (e) {
+    } catch (e) {   
         console.log(e)
         res.status(404).json({
             error: "Game Details Not Found"
         })
-    }
-})
-
+    }   
+}) 
 
 Router.post("/addreview", userVerify, async (req, res) => {
     let { Game_id, rating, comment } = req.body;
