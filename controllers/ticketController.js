@@ -103,19 +103,29 @@ Router.post("/addticket", userVerify, async (req, res) => {
 
 
 Router.put("/updateticket/:id", authVerify, async (req, res) => {
-    let id = req.params.id;
-    let { user_id, Game_id, amount, SeatNumber } = req.body;
-    if (user_id && Game_id && amount && SeatNumber) {
-        let data = await Ticket.findByIdAndUpdate(id, { user_id, Game_id, SeatNumber, amount }, { new: true });
-        console.log(data);
-        res.send(data)
-    } else {
-        res.send("enter all required feild")
-        console.log("enter all required feild")
+    try {
+
+        let id = req.params.id;
+        let { user_id, Game_id, amount, SeatNumber } = req.body;
+        if (user_id && Game_id && amount && SeatNumber) {
+            let data = await Ticket.findByIdAndUpdate(id, { user_id, Game_id, SeatNumber, amount }, { new: true });
+            console.log(data);
+            res.send(data)
+        } else {
+            res.send("enter all required feild")
+            console.log("enter all required feild")
+        }
+    } catch (e) {
+        return res.status(400).send("Can't Update Ticket")
     }
 })
 
 Router.delete("/deleteticket/:id", authVerify, async (req, res) => {
+    try {
+
+    } catch (e) {
+        return res.status(400).send("Cant Delete Ticket")
+    }
     let id = req.params.id;
     let data = await Ticket.findByIdAndDelete(id);
     console.log(data);

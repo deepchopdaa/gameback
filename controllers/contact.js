@@ -63,7 +63,7 @@ Router.put("/updatecontact/:id", authVerify, async (req, res) => {
         const { name, number, email, description } = req.body;
         if (!name || !number || !email || !description) {
             return res.status(400).json({ error: "All fields are required" });
-        }
+        }                                                                                                                       
         const existingContact = await Contact.findById(id);
         if (!existingContact) {
             return res.status(404).json({ error: "Contact not found" });

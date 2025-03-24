@@ -15,28 +15,31 @@ Router.get("/productDetail/:id", async (req, res) => {
         let data = await Game.findById(req.params.id);
         console.log(data);
         res.send(data)
-    } catch (e) {   
+    } catch (e) {
         console.log(e)
         res.status(404).json({
             error: "Game Details Not Found"
         })
-    }   
-}) 
-
-Router.post("/addreview", userVerify, async (req, res) => {
-    let { Game_id, rating, comment } = req.body;
-    const user = req.user
-    const user_id = user
-    console.log(req.body)
-    if (user_id && Game_id && rating && comment) {
-        let data = await Review.create({ user_id, Game_id, rating, comment });
-        console.log(data);
-        res.send(data);
-    } else {
-        res.send("enter all required feild")
-        console.log("enter all required feild")
     }
 })
 
+Router.post("/addreview", userVerify, async (req, res) => {
+    try {
+        let { Game_id, rating, comment } = req.body;
+        const user = req.user
+        const user_id = user
+        console.log(req.body)
+        if (user_id && Game_id && rating && comment) {
+            let data = await Review.create({ user_id, Game_id, rating, comment });
+            console.log(data);
+            res.send(data);
+        } else {
+            res.send("enter all required feild")
+            console.log("enter all required feild")
+        }
+    } catch (e) {
+        return res.status(400).send("Cant Add Review !")
+    }
+})
 
 module.exports = Router

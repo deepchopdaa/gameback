@@ -7,64 +7,87 @@ const userVerify = require("../middleware/UserMiddleware.js");
 
 
 Router.get("/getcart", userVerify, async (req, res) => {
-    let user = req.user;
-    let id = user.id
-    let data = await Cart.find({ user_id: id });
-    res.send(data);
-    console.log(data);
+    try {
+
+        let user = req.user;
+        let id = user.id
+        let data = await Cart.find({ user_id: id });
+        res.send(data);
+        console.log(data);
+    } catch (e) {
+        return res.status(400).send({ message: "Data Not Found" })
+    }
 })
 
 
 Router.post("/addcart", userVerify, async (req, res) => {
-    let { Game_id, amount, time_slot, ticket, t_price, date } = req.body;
-    console.log(req.body)
-    const user = req.user;
-    const user_id = user._id
+    try {
 
-    if (!user_id || !Game_id || !amount || !ticket || !date || !time_slot) {    
-        console.log("Enter all required fields");
-        return res.status(400).send("Enter all required fields");
-    }
-    console.log(Game_id, time_slot, date)
-    const NotAvailable = await Ticket.findOne({ Game_id, time_slot, date })
-    console.log(NotAvailable, "<------- Ticket Already booked----->")
-    if (NotAvailable) {
-        return res.send("Your Game is Already Booked for This Time")
-    } else {
-        const exist = await Cart.findOne({ user_id, Game_id, time_slot, date })
-        if (exist) {
-            exist.ticket += ticket,
-                exist.amount += amount
-            await exist.save();
-            console.log(exist, "<--- update Data cart that already exist ------->");
-            return res.send(exist)
-        } else {
-            let data = await Cart.create({ user_id, Game_id, ticket, time_slot, t_price, date, amount });
-            console.log(data);
-            return res.send("Your Game Add In Ticket Menu");
+        let { Game_id, amount, time_slot, ticket, t_price, date } = req.body;
+        console.log(req.body)
+
+        const user = req.user;
+        const user_id = user._id
+
+        if (!user_id || !Game_id || !amount || !ticket || !date || !time_slot) {
+            console.log("Enter all required fields");
+            return res.status(400).send("Enter all required fields");
         }
+        console.log(Game_id, time_slot, date)
+        const NotAvailable = await Ticket.findOne({ Game_id, time_slot, date })
+        console.log(NotAvailable, "<------- Ticket Already booked----->")
+        if (NotAvailable) {
+            return res.send("Your Game is Already Booked for This Time")
+        } else {
+            const exist = await Cart.findOne({ user_id, Game_id, time_slot, date })
+            if (exist) {
+                exist.ticket += ticket,
+                    exist.amount += amount
+                await exist.save();
+                console.log(exist, "<--- update Data cart that already exist ------->");
+                return res.send(exist)
+            } else {
+                let data = await Cart.create({ user_id, Game_id, ticket, time_slot, t_price, date, amount });
+                console.log(data);
+                return res.send("Your Game Add In Ticket Menu");
+            }
+        }
+    } catch (e) {
+        return res.status(400).send("Add Ticket in to Menu is Not Successful")
     }
-})
+
+}
+
+)
 Router.put("/updatecart/:id", userVerify, async (req, res) => {
-    let id = req.params.id;
-    const user = req.user;
-    const user_id = user._id
-    let { Game_id, amount, time_slot, ticket, t_price, date } = req.body;
-    if (user_id && Game_id && amount && ticket && time_slot && t_price && date) {
-        let data = await Cart.findByIdAndUpdate(id, { user_id, Game_id, ticket, time_slot, t_price, date, amount }, { new: true });
-        console.log(data);
-        res.send(data)
-    } else {
-        res.send("enter all required feild")
-        console.log("enter all required feild")
+    try {
+        let id = req.params.id;
+        const user = req.user;
+        const user_id = user._id
+        let { Game_id, amount, time_slot, ticket, t_price, date } = req.body;
+        if (user_id && Game_id && amount && ticket && time_slot && t_price && date) {
+            let data = await Cart.findByIdAndUpdate(id, { user_id, Game_id, ticket, time_slot, t_price, date, amount }, { new: true });
+            console.log(data);
+            res.send(data)
+        } else {
+            res.send("enter all required feild")
+            console.log("enter all required feild")
+        }
+    } catch (e) {
+        return res.status(400).send("Cart Not Update Commplite")
     }
 })
 
 Router.delete("/deletecart/:id", userVerify, async (req, res) => {
-    let id = req.params.id;
-    let data = await Cart.findByIdAndDelete({ _id: id });
-    console.log(data);
-    res.send(data);
+    try {
+
+        let id = req.params.id;
+        let data = await Cart.findByIdAndDelete({ _id: id });
+        console.log(data);
+        res.send(data);
+    } catch (e) {
+        return res.status(400).send("Delte Ticket Menu item Failed")
+    }
 })
 
 Router.delete("/Checkout", userVerify, async (req, res) => {

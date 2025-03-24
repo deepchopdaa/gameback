@@ -5,16 +5,27 @@ const authVerify = require('../middleware/authMiddleware.js');
 const userVerify = require("../middleware/UserMiddleware.js");
 
 Router.get("/getuser", authVerify, async (req, res) => {
-    let data = await User.find();
-    res.send(data);
-    console.log(data);
+    try {
+
+        let data = await User.find();
+        res.send(data);
+        console.log(data);
+    } catch (e) {
+        return res.status(400).send('Cant Get User')
+    }
 })
 
 Router.get("/getuserReview", async (req, res) => {
-    let data = await User.find();
-    res.send(data);
-    console.log(data);
+    try {
+
+        let data = await User.find();
+        res.send(data);
+        console.log(data);
+    } catch (e) {
+        return res.status(400).send("Can't Get User Review")
+    }
 })
+
 
 /* smaple code */
 
@@ -64,7 +75,7 @@ Router.put('/updatestatus/:id', authVerify, async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
         // Toggle status (assuming it's "active" or "inactive")
-        user.status = user.status === 'active' ? 'inactive' : 'active'; 
+        user.status = user.status === 'active' ? 'inactive' : 'active';
         // Save the updated user
         await user.save();
         res.json({ message: 'Status updated successfully', status: user.status });
@@ -75,10 +86,16 @@ Router.put('/updatestatus/:id', authVerify, async (req, res) => {
 });
 
 Router.delete("/deleteuser/:id", authVerify, async (req, res) => {
-    let id = req.params.id;
-    let data = await User.findByIdAndDelete(id);
-    console.log(data);
-    res.send(data);
+
+    try {
+        let id = req.params.id;
+        let data = await User.findByIdAndDelete(id);
+        console.log(data);
+        res.send(data);
+    } catch (e) {
+        return res.status(400).send("Cant Delete User !")
+    }
+
 })
 
 module.exports = Router
