@@ -7,8 +7,8 @@ Router.get("/getreview", authVerify, async (req, res) => {
     try {
 
         let data = await Review.find().sort({ date: -1 });;
-        res.send(data);
         console.log(data);
+        return res.send(data);
     } catch (e) {
         return res.status(400).send("Cant Gat Review")
     }
@@ -16,8 +16,8 @@ Router.get("/getreview", authVerify, async (req, res) => {
 Router.get("/getuserreview", async (req, res) => {
     try {
         let data = await Review.find();
-        res.send(data);
         console.log(data);
+        return res.send(data);
     } catch (e) {
         return res.status(400).send("Cant Get User's Review")
     }
@@ -27,8 +27,8 @@ Router.get("/getGamereview/:id", async (req, res) => {
 
         const id = req.params.id
         let data = await Review.find({ Game_id: id });
-        res.send(data);
         console.log(data);
+        return res.send(data);
     } catch (e) {
         return res.status(400).send("Cant get This Game Review")
     }
@@ -57,10 +57,10 @@ Router.post("/addreview", authVerify, async (req, res) => {
         if (user_id && Game_id && rating && comment) {
             let data = await Review.create({ user_id, Game_id, rating, comment, date });
             console.log(data);
-            res.send(data);
+            return res.send(data);
         } else {
-            res.send("enter all required feild")
             console.log("enter all required feild")
+            return res.send("enter all required feild")
         }
     } catch (e) {
         return res.status(400).send("Review Cant Add")
@@ -69,30 +69,27 @@ Router.post("/addreview", authVerify, async (req, res) => {
 
 Router.put("/updatereview/:id", authVerify, async (req, res) => {
     try {
-
         let id = req.params.id;
         let { user_id, Game_id, rating, comment, date } = req.body;
         if (user_id && Game_id && rating && comment) {
             let data = await Review.findByIdAndUpdate(id, { user_id, Game_id, rating, comment, date }, { new: true });
             console.log(data);
-            res.send(data)
+            return res.send(data)
         } else {
-            res.send("enter all required feild")
             console.log("enter all required feild")
+            return res.send("enter all required feild")
         }
     } catch (e) {
         return res.status(400).send("Cant Update Review")
     }
-}
-)
+})
 
 Router.delete("/deletereview/:id", authVerify, async (req, res) => {
     try {
-
         let id = req.params.id;
         let data = await Review.findByIdAndDelete(id);
         console.log(data);
-        res.send(data);
+        return res.send(data);
     } catch (e) {
         return res.status(400).send("Cant Delete Review !")
     }

@@ -6,10 +6,9 @@ const userVerify = require("../middleware/UserMiddleware.js");
 
 Router.get("/getuser", authVerify, async (req, res) => {
     try {
-
         let data = await User.find();
-        res.send(data);
         console.log(data);
+        return res.send(data);
     } catch (e) {
         return res.status(400).send('Cant Get User')
     }
@@ -17,16 +16,13 @@ Router.get("/getuser", authVerify, async (req, res) => {
 
 Router.get("/getuserReview", async (req, res) => {
     try {
-
         let data = await User.find();
-        res.send(data);
-        console.log(data);
+        console.log(data); 
+        return res.send(data);
     } catch (e) {
         return res.status(400).send("Can't Get User Review")
     }
 })
-
-
 /* smaple code */
 
 /* Router.get("/getuser", authVerify, async (req, res) => {
@@ -78,24 +74,22 @@ Router.put('/updatestatus/:id', authVerify, async (req, res) => {
         user.status = user.status === 'active' ? 'inactive' : 'active';
         // Save the updated user
         await user.save();
-        res.json({ message: 'Status updated successfully', status: user.status });
+        return res.json({ message: 'Status updated successfully', status: user.status });
     } catch (error) {
         console.error('Error updating status:', error);
-        res.status(500).json({ message: 'Internal server error' });
+        return res.status(500).json({ message: 'Internal server error' });
     }
 });
 
 Router.delete("/deleteuser/:id", authVerify, async (req, res) => {
-
     try {
         let id = req.params.id;
         let data = await User.findByIdAndDelete(id);
         console.log(data);
-        res.send(data);
+        return res.send(data);
     } catch (e) {
         return res.status(400).send("Cant Delete User !")
     }
-
 })
 
 module.exports = Router

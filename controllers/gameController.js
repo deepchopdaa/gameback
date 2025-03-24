@@ -13,10 +13,10 @@ Router.get("/getCategoryGame/:id", async (req, res) => {
         let data = await Game.find({ category: id });
         console.log(data);
         console.log("< ------ Game Get By Category --- >")
-        res.send(data)
+        return res.send(data)
     } catch (e) {
         console.log(e)
-        res.status(500).json({
+        return res.status(500).json({
             error: "server error"
         })
     }
@@ -31,10 +31,10 @@ Router.get("/getUserGame", async (req, res) => {
         let data = await Game.find();
         console.log(data);
         console.log("<------- All game getting ---->")
-        res.send(data)
+        return res.send(data)
     } catch (e) {
         console.log(e)
-        res.status(500).json({
+        return res.status(500).json({
             error: "server error"
         })
     }
@@ -46,10 +46,10 @@ Router.get("/getpopulor", async (req, res) => {
         let data = await Game.find().sort({price:-1}).limit(5);
         console.log(data);
         console.log("<------- All game getting ---->")
-        res.send(data)
+        return res.send(data)
     } catch (e) {
         console.log(e)
-        res.status(500).json({
+        return res.status(500).json({
             error: "server error"
         })
     }
@@ -78,10 +78,10 @@ Router.post("/getcartGame", async (req, res) => {
         const orderedData = gameIds.map(id => gameMap[id] || null); // Preserve order & duplicates
 
         console.log(orderedData, "Ordered Games Data");
-        res.json(orderedData);
+        return res.json(orderedData);
     } catch (e) {
         console.log(e);
-        res.status(500).json({ error: "Server error" });
+        return res.status(500).json({ error: "Server error" });
     }
 });
 
@@ -91,10 +91,10 @@ Router.get("/getGame", authVerify, async (req, res) => {
     try {
         let data = await Game.find();
         console.log(data);
-        res.send(data)
+        return res.send(data)
     } catch (e) {
         console.log(e)
-        res.status(500).json({
+        return res.status(500).json({
             error: "server error"
         })
     }
@@ -117,10 +117,10 @@ Router.post("/addGame", authVerify, upload.single('image'), async (req, res) => 
             image: req.file.path, // Store file path
             rating,
         });
-        res.status(201).json(newGame);
+        return res.status(201).json(newGame);
     } catch (e) {
         console.log(e)
-        res.status(500).json({
+        return res.status(500).json({
             error: "server error"
         })
     }
@@ -171,14 +171,14 @@ Router.put("/updateGame/:id", authVerify, upload.single("image"), async (req, re
             { new: true } // Returns updated document
         );
 
-        res.status(200).json({ message: "Game updated successfully", updatedGame });
+        return res.status(200).json({ message: "Game updated successfully", updatedGame });
     } catch (error) {
         console.error("Error updating game:", error);
-        res.status(500).json({ error: "Server error" });
+        return res.status(500).json({ error: "Server error" });
     }
 });
 
-module.exports = Router;
+
 
 Router.delete("/deleteGame/:id", authVerify, async (req, res) => {
     try {
@@ -205,10 +205,10 @@ Router.delete("/deleteGame/:id", authVerify, async (req, res) => {
         // Step 3: Delete the game record from the database
         let deletedGame = await Game.findByIdAndDelete(id);
 
-        res.status(200).json({ message: "Game deleted successfully", deletedGame });
+        return res.status(200).json({ message: "Game deleted successfully", deletedGame });
     } catch (error) {
         console.error("Error deleting game:", error);
-        res.status(500).json({ error: "Server error" });
+        return res.status(500).json({ error: "Server error" });
     }
 });
 

@@ -8,8 +8,8 @@ const userVerify = require("../middleware/UserMiddleware.js");
 Router.get("/getticket", authVerify, async (req, res) => {
     try {
         let data = await Ticket.find().sort({ date: -1 });
-        res.send(data);
         console.log(data);
+        return res.send(data);
     } catch (e) {
         console.log("Getting Ticket Error", e)
     }
@@ -110,10 +110,10 @@ Router.put("/updateticket/:id", authVerify, async (req, res) => {
         if (user_id && Game_id && amount && SeatNumber) {
             let data = await Ticket.findByIdAndUpdate(id, { user_id, Game_id, SeatNumber, amount }, { new: true });
             console.log(data);
-            res.send(data)
+            return res.send(data)
         } else {
-            res.send("enter all required feild")
             console.log("enter all required feild")
+            return res.send("enter all required feild")
         }
     } catch (e) {
         return res.status(400).send("Can't Update Ticket")
@@ -122,14 +122,14 @@ Router.put("/updateticket/:id", authVerify, async (req, res) => {
 
 Router.delete("/deleteticket/:id", authVerify, async (req, res) => {
     try {
-
+        let id = req.params.id;
+        let data = await Ticket.findByIdAndDelete(id);
+        console.log(data);
+        return res.send(data);
     } catch (e) {
         return res.status(400).send("Cant Delete Ticket")
     }
-    let id = req.params.id;
-    let data = await Ticket.findByIdAndDelete(id);
-    console.log(data);
-    res.send(data);
+   
 })
 
 module.exports = Router

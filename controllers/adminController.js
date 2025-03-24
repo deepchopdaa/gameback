@@ -15,10 +15,10 @@ const bcrypt = require('bcrypt');
 Router.get("/getAdmin", async (req, res) => {
     try {
         let data = await Admin.find();
-        res.status(200).send(data);
         console.log(data);
+        return res.status(200).send(data);
     } catch (e) {
-        res.status(403).send('admin data is not getted sucessful', e)
+        return res.status(403).send('admin data is not getted sucessful', e)
     }
 })
 
@@ -46,11 +46,11 @@ Router.post("/addAdmin", async (req, res) => {
                 return res.status(201).send(data)
             }).catch((err) => {
                 console.log(err);
-                res.status(500).send(`error ${err}`)
+                return res.status(500).send(`error ${err}`)
             })
         })
     } catch (e) {
-        res.status(403).send('admin is not Added sucessful', e)
+        return res.status(403).send('admin is not Added sucessful', e)
     }
 })
 
@@ -62,13 +62,13 @@ Router.put("/updateadmin/:id", async (req, res) => {
         if (name && email && password) {
             let data = await Admin.findByIdAndUpdate(id, { name, email, password }, { new: true });
             console.log(data);
-            res.send(data)
+            return res.send(data)
         } else {
             res.send("enter all required feild")
             console.log("enter all required feild")
         }
     } catch (e) {
-        res.status(403).send('admin data is not Updated sucessful', e)
+        return res.status(403).send('admin data is not Updated sucessful', e)
     }
 })
 
@@ -103,7 +103,7 @@ Router.get("/getCount", async (req, res) => {
         const ticket = await Ticket.countDocuments({});
         const user = await User.countDocuments({});
         console.log(category, contact, game, review, ticket, user);
-        res.json({ category, contact, game, review, ticket, user });
+        return res.json({ category, contact, game, review, ticket, user });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal Server Error" });

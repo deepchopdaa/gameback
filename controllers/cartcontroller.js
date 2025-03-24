@@ -8,27 +8,50 @@ const userVerify = require("../middleware/UserMiddleware.js");
 
 Router.get("/getcart", userVerify, async (req, res) => {
     try {
-
         let user = req.user;
         let id = user.id
         let data = await Cart.find({ user_id: id });
-        res.send(data);
         console.log(data);
+        return res.send(data);
     } catch (e) {
         return res.status(400).send({ message: "Data Not Found" })
     }
 })
 
+const validateDate = (req, res, next) => {
+    const { date } = req.body;
+    const today = new Date().setHours(0, 0, 0, 0);
+    const selectedDate = new Date(date).setHours(0, 0, 0, 0);
+    if (selectedDate < today) {
+        return res.send("Past Date are not allowed.");
+    }
+    next();
+};
 
-Router.post("/addcart", userVerify, async (req, res) => {
+
+const validateTime = (req, res, next) => {
+    const { time_slot } = req.body;
+    const now = new Date();
+    const currentHours = now.getHours();
+    console.log(currentHours)
+    const inputHours = time_slot.split("-")[0];
+    const Mode = time_slot.split(" ")[1];
+    console.log(Mode)
+    console.log(inputHours, "<---- input hours ---->")
+    if (inputHours <= currentHours) {
+        if (Mode == "AM") {
+            return res.send("Past times are not allowed.");
+        }
+    }
+    next();
+};
+
+Router.post("/addcart", userVerify, validateDate, validateTime, async (req, res) => {
     try {
-
         let { Game_id, amount, time_slot, ticket, t_price, date } = req.body;
         console.log(req.body)
-
         const user = req.user;
         const user_id = user._id
-
         if (!user_id || !Game_id || !amount || !ticket || !date || !time_slot) {
             console.log("Enter all required fields");
             return res.status(400).send("Enter all required fields");
@@ -51,14 +74,12 @@ Router.post("/addcart", userVerify, async (req, res) => {
                 console.log(data);
                 return res.send("Your Game Add In Ticket Menu");
             }
-        }
+        }   
     } catch (e) {
         return res.status(400).send("Add Ticket in to Menu is Not Successful")
     }
-
-}
-
-)
+    
+})
 Router.put("/updatecart/:id", userVerify, async (req, res) => {
     try {
         let id = req.params.id;
@@ -68,10 +89,10 @@ Router.put("/updatecart/:id", userVerify, async (req, res) => {
         if (user_id && Game_id && amount && ticket && time_slot && t_price && date) {
             let data = await Cart.findByIdAndUpdate(id, { user_id, Game_id, ticket, time_slot, t_price, date, amount }, { new: true });
             console.log(data);
-            res.send(data)
+            return res.send(data)
         } else {
-            res.send("enter all required feild")
             console.log("enter all required feild")
+            return res.send("enter all required feild")
         }
     } catch (e) {
         return res.status(400).send("Cart Not Update Commplite")
@@ -80,11 +101,10 @@ Router.put("/updatecart/:id", userVerify, async (req, res) => {
 
 Router.delete("/deletecart/:id", userVerify, async (req, res) => {
     try {
-
         let id = req.params.id;
         let data = await Cart.findByIdAndDelete({ _id: id });
         console.log(data);
-        res.send(data);
+        return res.send(data);
     } catch (e) {
         return res.status(400).send("Delte Ticket Menu item Failed")
     }
@@ -98,7 +118,7 @@ Router.delete("/Checkout", userVerify, async (req, res) => {
         console.log("User Id in Delete Cart", id)
         let data = await Cart.deleteMany({ user_id: id });
         console.log(data);
-        res.send(data);
+        return res.send(data);
     } catch (e) {
         console.log("Delete All item in Cart Error", e)
     }
