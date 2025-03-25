@@ -98,7 +98,7 @@ Router.put("/updatecart/:id", userVerify, async (req, res) => {
         return res.status(400).send("Cart Not Update Commplite")
     }
 })
-
+    
 Router.delete("/deletecart/:id", userVerify, async (req, res) => {
     try {
         let id = req.params.id;

@@ -1,38 +1,47 @@
-// This is your test secret API key.
-const stripe = require('stripe')('sk_test_51QplFuGdMatXIonZRXvniiBMOFF6uxTW5dsSHgV9NC0XQvPwyoV0xfhZGqm8zaJgQL7Qb1wmJuWjKIcrRsPybthr00R8PupW28');
-const express = require('express');
-const app = express();
-const Router = express.Router();
-app.use(express.static('public'));
+const express = require("express");
+const Stripe = require("stripe");
+const dotenv = require("dotenv");
 
-const YOUR_DOMAIN = 'http://localhost:3000/';
+dotenv.config();
+const router = express.Router();
+const stripe = Stripe("sk_test_51QplFuGdMatXIonZRXvniiBMOFF6uxTW5dsSHgV9NC0XQvPwyoV0xfhZGqm8zaJgQL7Qb1wmJuWjKIcrRsPybthr00R8PupW28");
 
-Router.post('/create-checkout-session', async (req, res) => {
-  const session = await stripe.checkout.sessions.create({
-    line_items: [
-      {
-        // Provide the exact Price ID (for example, pr_1234) of the product you want to sell
-        price: 'price_1QqBpIGdMatXIonZTTIirTEI',
-        quantity: 1,
-      },    
-    ],
-    mode: 'subscription',
-    success_url: `${YOUR_DOMAIN}payment/success`,
-    cancel_url: `${YOUR_DOMAIN}payment/cancel`,
+router.use(express.json()); // Middleware to parse JSON body
+
+// Create Checkout Session
+router.post("/create-checkout-session", async (req, res) => {
+  try {
+    const { priceId } = req.body;
+
+    const session = await stripe.checkout.sessions.create({
+      ui_mode: "embedded",
+      line_items: [
+        {
+          price: priceId, // Product Price ID
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      return_url: `http://localhost:3100/return?session_id={CHECKOUT_SESSION_ID}`,
+    });
+
+    res.json({ clientSecret: session.client_secret });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
-  console.log(session)
-  /* res.redirect(303, session.url); */
-  console.log("-----------------------------");
-  console.log(session.url)
-  res.send(session)
+
+// Retrieve Payment Session Status
+router.get("/session-status", async (req, res) => {
+  try {
+    const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+    res.json({
+      status: session.status,
+      customer_email: session.customer_details?.email || "N/A"
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-Router.get("/success",async (req,res)=>{
-  res.send("Payment successful")
-})
-Router.get("/cancel",async (req,res)=>{
-  res.send("Payment cancel")
-})
-
-
-module.exports = Router;
+module.exports = router;
