@@ -29,7 +29,7 @@ const cartSchema = mongoose.Schema({
         type:Number,
         require:true
     }
-},{ timestamps: true })
+},{ timestamps: true , versionKey: false })
 
 const Ticket = mongoose.model('cart', cartSchema);
 module.exports = Ticket;    

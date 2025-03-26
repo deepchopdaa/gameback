@@ -136,7 +136,7 @@ Router.put("/updateGame/:id", authVerify, upload.single("image"), async (req, re
         if (!title || !category || !description || !price || !rating) {
             return res.status(400).json({ error: "Enter all required fields" });
         }
-
+        
         // Step 1: Find the existing game
         let existingGame = await Game.findById(id);
         if (!existingGame) {

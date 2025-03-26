@@ -21,7 +21,7 @@ const ReviewSchema = mongoose.Schema({
         type:Date,  
         default:Date.now    
     }
-},{ timestamps: true })
+},{ timestamps: true , versionKey: false})
 
 const Review = mongoose.model('Review',ReviewSchema);
 module.exports = Review;

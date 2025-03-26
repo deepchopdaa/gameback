@@ -26,7 +26,7 @@ const GameSchema = mongoose.Schema({
         type: String,
         require: true
     }
-},{ timestamps: true })
+},{ timestamps: true , versionKey: false})
 const Game = mongoose.model('Game', GameSchema);
 module.exports = Game;
 

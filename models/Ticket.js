@@ -25,7 +25,7 @@ const TicketSchema = mongoose.Schema({
         type:String,
         require:true
     }
-},{ timestamps: true })
+},{ timestamps: true , versionKey: false})
 
 const Ticket = mongoose.model('Ticket', TicketSchema);
 module.exports = Ticket;    

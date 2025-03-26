@@ -17,7 +17,7 @@ const ContactSchema =  mongoose.Schema({
         type:String,
         require:true
     }
-},{ timestamps: true })
+},{ timestamps: true, versionKey: false })
 
 const Contact = mongoose.model('Contact',ContactSchema);
 module.exports = Contact;

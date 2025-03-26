@@ -18,7 +18,10 @@ const userRoute = require('./controllers/userController.js')
 const SendMail = require('./controllers/SendMail.js');
 const Contact = require('./controllers/contact.js')
 const UserPenel = require("./controllers/UserPenel.js")
-const cart = require("./controllers/cartcontroller.js")
+const cart = require("./controllers/cartcontroller.js");
+const slider = require("./controllers/SliderImage.js");
+
+
 const PORT = process.env.PORT
 app.use(cors());
 app.use(express.json());
@@ -34,6 +37,7 @@ app.use('/cart', cart)
 app.use('/payment', PaymentRoute)
 app.use('/review', reviewRoute)
 app.use('/ticket', ticketRoute)
+app.use('/slider', slider)
 app.use('/user', userRoute)
 app.use('/send', SendMail)
 app.use("/api/payment", PaymentRoute)
