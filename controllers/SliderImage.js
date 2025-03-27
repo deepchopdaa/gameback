@@ -23,7 +23,7 @@ Router.post("/sendimage", upload.single('image'), async (req, res) => {
             console.log("enter require field")
             return res.status(400).json({ error: "Enter all required fields" });
         }
-        let data = await Slider.create({ title, image: req.file.path });
+        let data = await Slider.create({ title, image: req.file.path });    
         console.log(data)
         return res.send(data)
     } catch (e) {

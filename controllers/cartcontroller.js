@@ -18,12 +18,16 @@ Router.get("/getcart", userVerify, async (req, res) => {
     }
 })
 
+let flag = true
+
 const validateDate = (req, res, next) => {
     const { date } = req.body;
     const today = new Date().setHours(0, 0, 0, 0);
     const selectedDate = new Date(date).setHours(0, 0, 0, 0);
     if (selectedDate < today) {
         return res.send("Past Date are not allowed.");
+    }else{
+        flag = false
     }
     next();
 };
@@ -38,7 +42,7 @@ const validateTime = (req, res, next) => {
     const Mode = time_slot.split(" ")[1];
     console.log(Mode)
     console.log(inputHours, "<---- input hours ---->")
-    if (inputHours <= currentHours) {
+    if (inputHours <= currentHours && flag == false) {
         if (Mode == "AM") {
             return res.send("Past times are not allowed.");
         }
@@ -74,11 +78,11 @@ Router.post("/addcart", userVerify, validateDate, validateTime, async (req, res)
                 console.log(data);
                 return res.send("Your Game Add In Ticket Menu");
             }
-        }   
+        }
     } catch (e) {
         return res.status(400).send("Add Ticket in to Menu is Not Successful")
     }
-    
+
 })
 Router.put("/updatecart/:id", userVerify, async (req, res) => {
     try {
@@ -98,7 +102,7 @@ Router.put("/updatecart/:id", userVerify, async (req, res) => {
         return res.status(400).send("Cart Not Update Commplite")
     }
 })
-    
+
 Router.delete("/deletecart/:id", userVerify, async (req, res) => {
     try {
         let id = req.params.id;
