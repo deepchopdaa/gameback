@@ -26,7 +26,7 @@ const validateDate = (req, res, next) => {
     const selectedDate = new Date(date).setHours(0, 0, 0, 0);
     if (selectedDate < today) {
         return res.send("Past Date are not allowed.");
-    }else{
+    } else {
         flag = false
     }
     next();

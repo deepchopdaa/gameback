@@ -7,12 +7,12 @@ const upload = require("../middleware/uploadMiddleware.js");
 Router.get("/getimage", async (req, res) => {
     try {
         let data = await Slider.find();
-        console.log(data ,"images slider");
+        console.log(data, "images slider");
         return res.send(data)
     } catch (e) {
         console.log("Slider Data Getting Error")
         return res.send("Slider Get Failed", e)
-    }
+    }   
 })
 
 Router.post("/sendimage", upload.single('image'), async (req, res) => {
@@ -23,7 +23,7 @@ Router.post("/sendimage", upload.single('image'), async (req, res) => {
             console.log("enter require field")
             return res.status(400).json({ error: "Enter all required fields" });
         }
-        let data = await Slider.create({ title, image: req.file.path });    
+        let data = await Slider.create({ title, image: req.file.path });
         console.log(data)
         return res.send(data)
     } catch (e) {
@@ -79,7 +79,6 @@ Router.delete("/deleteimage/:id", async (req, res) => {
         if (!existing) {
             return res.status(400).send("Record Not Found !")
         }
-
         let imagePath = path.join(__dirname, "../uploads", existing.image);
         fs.unlink(imagePath, (err) => {
             if (err) {
