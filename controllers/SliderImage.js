@@ -10,7 +10,7 @@ Router.get("/getimage", async (req, res) => {
         console.log(data, "images slider");
         return res.send(data)
     } catch (e) {
-        console.log("Slider Data Getting Error")
+        console.log("Slider Data Getting Error",e)
         return res.send("Slider Get Failed", e)
     }   
 })
@@ -27,8 +27,8 @@ Router.post("/sendimage", upload.single('image'), async (req, res) => {
         console.log(data)
         return res.send(data)
     } catch (e) {
-        console.log("Image Upload Error");
-        return res.send("Data Insert Failed")
+        console.log("Image Upload Error",e);
+        return res.send("Data Insert Failed",e)
     }
 })
 
@@ -67,8 +67,8 @@ Router.put("/updateimage/:id", upload.single('image'), async (req, res) => {
         console.log("Update data ", UpdatedData)
         return res.status(200).send(UpdatedData)
     } catch (e) {
-        console.log("Slider Update Error");
-        return res.send("Slider Update Failed")
+        console.log("Slider Update Error",e);
+        return res.send("Slider Update Failed",e)
     }
 })
 
