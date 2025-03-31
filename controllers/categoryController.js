@@ -14,10 +14,8 @@ Router.get("/getcategory", authVerify, async (req, res) => {
     }
 })
 
-
 Router.post("/addcategory", authVerify, async (req, res) => {
     try {
-
         let { name, description } = req.body;
         if (name && description) {
             let data = await category.create({ name, description });
@@ -34,7 +32,6 @@ Router.post("/addcategory", authVerify, async (req, res) => {
 
 Router.put("/updatecategory/:id", authVerify, async (req, res) => {
     try {
-
         let id = req.params.id;
         let { name, description } = req.body;
         if (name && description) {
@@ -44,7 +41,7 @@ Router.put("/updatecategory/:id", authVerify, async (req, res) => {
         } else {
             console.log("enter all required feild")
             return res.send("enter all required feild")
-        }
+        }       
     } catch (e) {
         return res.status(400).send("Update Category failed")
     }
@@ -52,7 +49,6 @@ Router.put("/updatecategory/:id", authVerify, async (req, res) => {
 
 Router.delete("/deletecategory/:id", authVerify, async (req, res) => {
     try {
-
         let id = req.params.id;
         let data = await category.findByIdAndDelete(id);
         console.log(data);
