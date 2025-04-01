@@ -17,7 +17,7 @@ const userVerify = async (req, res, next) => {
             }
             const userId = verificationResponse.id;
             const findUser = await userModel.findOne({ _id: new mongoose.Types.ObjectId(userId) });
-
+           
             if (findUser) {
                 console.log(findUser)
                 req.user = findUser;

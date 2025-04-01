@@ -112,7 +112,7 @@ Router.post("/addGame", authVerify, upload.single('image'), async (req, res) => 
         const newGame = await Game.create({
             title,
             category,
-            description,
+            description,    
             price,
             image: req.file.path, // Store file path
             rating,

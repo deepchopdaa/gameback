@@ -14,15 +14,16 @@ Router.get("/getuser", authVerify, async (req, res) => {
     }
 })
 
-Router.get("/getuserReview", async (req, res) => {
+Router.get("/getuserReview", userVerify, async (req, res) => {
     try {
         let data = await User.find();
-        console.log(data); 
+        console.log(data);
         return res.send(data);
     } catch (e) {
         return res.status(400).send("Can't Get User Review")
     }
 })
+
 /* smaple code */
 
 /* Router.get("/getuser", authVerify, async (req, res) => {
@@ -74,7 +75,7 @@ Router.put('/updatestatus/:id', authVerify, async (req, res) => {
         user.status = user.status === 'active' ? 'inactive' : 'active';
         // Save the updated user
         await user.save();
-        return res.json({ message: 'Status updated successfully', status: user.status });
+        return res.json({ message: 'Status updated successfully', status: user.status });   
     } catch (error) {
         console.error('Error updating status:', error);
         return res.status(500).json({ message: 'Internal server error' });
@@ -89,6 +90,41 @@ Router.delete("/deleteuser/:id", authVerify, async (req, res) => {
         return res.send(data);
     } catch (e) {
         return res.status(400).send("Cant Delete User !")
+    }
+})
+
+
+/* for user Penel */
+
+Router.get("/getuserdetails", userVerify, async (req, res) => {
+    try {
+        console.log("api calling")
+        const user = req.user;
+        if (!user) {
+            return res.status(200).send("User Not Found");
+        } else {
+            console.log(user);
+        }
+        // console.log(data);
+        return res.send(user);
+    } catch (e) {
+        return res.status(500).send('Internal server Error')
+    }
+})
+
+Router.put("/updateuser", userVerify, async (req, res) => {
+    try {
+        console.log("Update User Api call")
+        const  user  = req.body;
+        console.log(user, "Update User Body")
+        const user1 = req.user
+        console.log(user1 , "req .user")
+        const userId = user1._id
+        let data = await User.findByIdAndUpdate(userId, user, { new: true });
+        console.log(data);
+        return res.send(data);
+    } catch (e) {
+        return res.status(500).send("Internal server Error")
     }
 })
 
