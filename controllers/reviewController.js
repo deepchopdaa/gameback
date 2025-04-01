@@ -5,8 +5,7 @@ const authVerify = require('../middleware/authMiddleware.js');
 const userVerify = require("../middleware/UserMiddleware.js");
 Router.get("/getreview", authVerify, async (req, res) => {
     try {
-
-        let data = await Review.find().sort({ date: -1 });;
+        let data = await Review.find().sort({ date: -1 });
         console.log(data);
         return res.send(data);
     } catch (e) {
@@ -15,7 +14,7 @@ Router.get("/getreview", authVerify, async (req, res) => {
 })
 Router.get("/getuserreview", async (req, res) => {
     try {
-        let data = await Review.find();
+        let data = await Review.find().sort({ date: -1 });;
         console.log(data);
         return res.send(data);
     } catch (e) {
@@ -24,7 +23,6 @@ Router.get("/getuserreview", async (req, res) => {
 })
 Router.get("/getGamereview/:id", async (req, res) => {
     try {
-
         const id = req.params.id
         let data = await Review.find({ Game_id: id });
         console.log(data);
@@ -37,7 +35,7 @@ Router.get("/getGamereview/:id", async (req, res) => {
 /* Get Review for product details page perticulor game */
 
 Router.get("/getdetailreview/:id", userVerify, async (req, res) => {
-    try {   
+    try {
         const id = req.params.id;
         let data = await Review.find({ Game_id: id })
         if (!data) {

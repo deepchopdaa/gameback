@@ -64,7 +64,7 @@ Router.post("/addcart", userVerify, validateDate, validateTime, async (req, res)
         const NotAvailable = await Ticket.findOne({ Game_id, time_slot, date })
         console.log(NotAvailable, "<------- Ticket Already booked----->")
         if (NotAvailable) {
-            return res.send("Your Game is Already Booked for This Time")
+            return res.send("This Game is Already Booked for This Time")
         } else {
             const exist = await Cart.findOne({ user_id, Game_id, time_slot, date })
             if (exist) {
@@ -125,6 +125,24 @@ Router.delete("/Checkout", userVerify, async (req, res) => {
         return res.send(data);
     } catch (e) {
         console.log("Delete All item in Cart Error", e)
+    }
+})
+
+/* for checkout sum of total */
+
+Router.get("/getTotal", userVerify, async (req, res) => {
+    try {
+        console.log("Get Total Api called")
+        const user = req.user;
+        console.log(user, "user Detail for total get");
+        let data = await Cart.find({ user_id: user._id });
+        console.log(data);
+        const total = data.reduce((sum, item) => sum + (item.amount || 0), 0)
+        console.log(total)
+        return res.status(200).send({total})
+    } catch (e) {
+        console.log("Get Total of Booking Game Error", e);
+        return res.status(500).send("Get Total Error", e)
     }
 })
 
