@@ -37,10 +37,10 @@ const validateTime = (req, res, next) => {
     const { time_slot } = req.body;
     const now = new Date();
     const currentHours = now.getHours();
-    console.log(currentHours)
+    console.log(currentHours);
     const inputHours = time_slot.split("-")[0];
     const Mode = time_slot.split(" ")[1];
-    console.log(Mode)
+    console.log(Mode);
     console.log(inputHours, "<---- input hours ---->")
     if (inputHours <= currentHours && flag == false) {
         if (Mode == "AM") {
@@ -61,7 +61,7 @@ Router.post("/addcart", userVerify, validateDate, validateTime, async (req, res)
             return res.status(400).send("Enter all required fields");
         }
         console.log(Game_id, time_slot, date)
-        const NotAvailable = await Ticket.findOne({ Game_id, time_slot, date })
+        const NotAvailable = await Ticket.findOne({ Game_id, time_slot, date }) 
         console.log(NotAvailable, "<------- Ticket Already booked----->")
         if (NotAvailable) {
             return res.send("This Game is Already Booked for This Time")
@@ -82,7 +82,6 @@ Router.post("/addcart", userVerify, validateDate, validateTime, async (req, res)
     } catch (e) {
         return res.status(400).send("Add Ticket in to Menu is Not Successful")
     }
-
 })
 Router.put("/updatecart/:id", userVerify, async (req, res) => {
     try {
@@ -105,7 +104,7 @@ Router.put("/updatecart/:id", userVerify, async (req, res) => {
 
 Router.delete("/deletecart/:id", userVerify, async (req, res) => {
     try {
-        let id = req.params.id;
+        let id = req.params.id; 
         let data = await Cart.findByIdAndDelete({ _id: id });
         console.log(data);
         return res.send(data);

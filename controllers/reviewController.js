@@ -34,7 +34,7 @@ Router.get("/getGamereview/:id", async (req, res) => {
 
 /* Get Review for product details page perticulor game */
 
-Router.get("/getdetailreview/:id", userVerify, async (req, res) => {
+Router.get("/getdetailreview/:id", async (req, res) => {
     try {
         const id = req.params.id;
         let data = await Review.find({ Game_id: id })

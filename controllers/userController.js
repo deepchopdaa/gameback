@@ -14,7 +14,7 @@ Router.get("/getuser", authVerify, async (req, res) => {
     }
 })
 
-Router.get("/getuserReview", userVerify, async (req, res) => {
+Router.get("/getuserReview", async (req, res) => {
     try {
         let data = await User.find();
         console.log(data);
