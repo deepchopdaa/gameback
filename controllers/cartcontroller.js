@@ -108,7 +108,7 @@ Router.delete("/deletecart/:id", userVerify, async (req, res) => {
         let data = await Cart.findByIdAndDelete({ _id: id });
         console.log(data);
         return res.send(data);
-    } catch (e) {
+    } catch (e) {   
         return res.status(400).send("Delte Ticket Menu item Failed")
     }
 })
