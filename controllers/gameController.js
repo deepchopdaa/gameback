@@ -22,9 +22,6 @@ Router.get("/getCategoryGame/:id", async (req, res) => {
     }
 })
 
-
-
-
 /* for Game Detail */
 Router.get("/getUserGame", async (req, res) => {
     try {
@@ -43,7 +40,7 @@ Router.get("/getUserGame", async (req, res) => {
 /* polulor  */
 Router.get("/getpopulor", async (req, res) => {
     try {
-        let data = await Game.find().sort({price:-1}).limit(5);
+        let data = await Game.find().sort({ price: -1 }).limit(5);
         console.log(data);
         console.log("<------- All game getting ---->")
         return res.send(data)
@@ -101,7 +98,7 @@ Router.get("/getGame", authVerify, async (req, res) => {
 })
 
 
-Router.post("/addGame", authVerify, upload.single('image'), async (req, res) => {
+Router.post("/addGame", upload.single('image'), async (req, res) => {
     try {
         let { title, category, description, price, rating } = req.body;
         console.log(req.body)
@@ -112,7 +109,7 @@ Router.post("/addGame", authVerify, upload.single('image'), async (req, res) => 
         const newGame = await Game.create({
             title,
             category,
-            description,    
+            description,
             price,
             image: req.file.path, // Store file path
             rating,
@@ -136,7 +133,7 @@ Router.put("/updateGame/:id", authVerify, upload.single("image"), async (req, re
         if (!title || !category || !description || !price || !rating) {
             return res.status(400).json({ error: "Enter all required fields" });
         }
-        
+
         // Step 1: Find the existing game
         let existingGame = await Game.findById(id);
         if (!existingGame) {

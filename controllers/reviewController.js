@@ -50,7 +50,6 @@ Router.get("/getdetailreview/:id", async (req, res) => {
 
 Router.post("/addreview", authVerify, async (req, res) => {
     try {
-
         let { user_id, Game_id, rating, comment, date } = req.body;
         if (user_id && Game_id && rating && comment) {
             let data = await Review.create({ user_id, Game_id, rating, comment, date });

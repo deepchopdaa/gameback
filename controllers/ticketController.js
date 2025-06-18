@@ -5,6 +5,7 @@ const game = require("../models/Game.js")
 const authVerify = require('../middleware/authMiddleware.js')
 const Nodemailer = require("nodemailer");
 const userVerify = require("../middleware/UserMiddleware.js");
+
 Router.get("/getticket", authVerify, async (req, res) => {
     try {
         let data = await Ticket.find().sort({ date: -1 });
@@ -129,7 +130,7 @@ Router.delete("/deleteticket/:id", authVerify, async (req, res) => {
     } catch (e) {
         return res.status(400).send("Cant Delete Ticket")
     }
-   
+
 })
 
 module.exports = Router

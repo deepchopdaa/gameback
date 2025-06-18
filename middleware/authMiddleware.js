@@ -13,13 +13,14 @@ const verifytoken = async (req, res, next) => {
         console.log(token);
         const verify = jwt.verify(token, secrate_key)
         if (verify) {
-            console.log(verify , "<------verify-------->")
+            console.log(verify, "<------verify-------->")
             Admin.findOne({ _id: verify.id }).then((user1) => {
                 if (user1) {
                     console.log(user1, "<------------------Admin data ----------------->")
                     return next();
-                }else{
-                    console.log("Admin Not Found")                }
+                } else {
+                    console.log("Admin Not Found")
+                }
             }).catch((e) => {
                 console.log("Admin Not Found", e)
             })

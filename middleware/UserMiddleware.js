@@ -13,20 +13,20 @@ const userVerify = async (req, res, next) => {
             const verificationResponse = await verify(Authorization, secretKey);
 
             if (!verificationResponse) {
-                next({status :401, message :'Wrong authentication token'});
+                next({ status: 401, message: 'Wrong authentication token' });
             }
             const userId = verificationResponse.id;
             const findUser = await userModel.findOne({ _id: new mongoose.Types.ObjectId(userId) });
-           
+
             if (findUser) {
                 console.log(findUser)
                 req.user = findUser;
                 next();
             } else {
-                next({status :401, message :'Wrong authentication token'});
+                next({ status: 401, message: 'Wrong authentication token' });
             }
         } else {
-            next({status :404, message :'Token Expiry or Login First...... '})
+            next({ status: 404, message: 'Token Expiry or Login First...... ' })
         }
     } catch (error) {
         next(error);
