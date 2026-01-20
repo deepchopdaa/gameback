@@ -8,7 +8,7 @@ const authVerify = require('../middleware/authMiddleware.js');
 const UserVerify = require('../middleware/UserMiddleware.js')
 Router.get("/getcontact", authVerify, async (req, res) => {
     try {
-        const data = await Contact.find();
+        const data = await Contact.find().sort({ _id: -1 });
         return res.status(200).json(data);
     } catch (error) {
         console.error("Error fetching contacts:", error);
@@ -26,7 +26,7 @@ Router.post("/addcontact", UserVerify, async (req, res) => {
         }
         const newContact = await Contact.create({ name, number, email, description });
         console.log("New Contact Added:", newContact);
-      
+
         const transporter = Nodemailer.createTransport({
             host: "smtp.ethereal.email",
             service: 'gmail',
@@ -64,7 +64,7 @@ Router.put("/updatecontact/:id", authVerify, async (req, res) => {
         const { name, number, email, description } = req.body;
         if (!name || !number || !email || !description) {
             return res.status(400).json({ error: "All fields are required" });
-        }                                                                                                                       
+        }
         const existingContact = await Contact.findById(id);
         if (!existingContact) {
             return res.status(404).json({ error: "Contact not found" });

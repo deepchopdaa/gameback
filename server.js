@@ -22,7 +22,7 @@ const cart = require("./controllers/cartcontroller.js");
 const slider = require("./controllers/SliderImage.js");
 
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3000
 app.use(cors());
 app.use(express.json());
 /* file multer */
@@ -42,7 +42,7 @@ app.use('/user', userRoute)
 app.use('/send', SendMail)
 
 app.use('/contact', Contact)
-app.listen(3100, () => {
+app.listen(PORT, () => {
     console.log("app is running on 3100 port")
 })
 

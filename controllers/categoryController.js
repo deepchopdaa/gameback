@@ -6,7 +6,7 @@ const userVerify = require("../middleware/UserMiddleware.js");
 
 Router.get("/getcategory", authVerify, async (req, res) => {
     try {
-        let data = await category.find();
+        let data = await category.find().sort({ _id: -1 });
         console.log(data);
         return res.send(data);
     } catch (e) {
@@ -41,7 +41,7 @@ Router.put("/updatecategory/:id", authVerify, async (req, res) => {
         } else {
             console.log("enter all required feild")
             return res.send("enter all required feild")
-        }       
+        }
     } catch (e) {
         return res.status(400).send("Update Category failed")
     }
@@ -67,6 +67,21 @@ Router.get("/getusercategory", async (req, res) => {
         return res.send(data);
     } catch (e) {
         return res.status(400).send("User Side Category Cant Load !")
+    }
+})
+
+
+Router.get("/getcategorylist", async (req, res) => {
+    try {
+        let data = await category.find().limit(5);
+        console.log(data);
+        console.log("<------- All game getting ---->")
+        return res.send(data)
+    } catch (e) {
+        console.log(e)
+        return res.status(500).json({
+            error: "server error"
+        })
     }
 })
 

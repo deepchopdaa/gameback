@@ -6,7 +6,7 @@ const path = require("path")
 const upload = require("../middleware/uploadMiddleware.js");
 Router.get("/getimage", async (req, res) => {
     try {
-        let data = await Slider.find();
+        let data = await Slider.find().sort({ _id: -1 });
         console.log(data, "images slider");
         return res.send(data)
     } catch (e) {

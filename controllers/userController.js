@@ -6,7 +6,7 @@ const userVerify = require("../middleware/UserMiddleware.js");
 
 Router.get("/getuser", authVerify, async (req, res) => {
     try {
-        let data = await User.find();
+        let data = await User.find().sort({ _id: -1 });
         console.log(data);
         return res.send(data);
     } catch (e) {

@@ -61,7 +61,7 @@ Router.post("/addcart", userVerify, validateDate, validateTime, async (req, res)
             return res.status(400).send("Enter all required fields");
         }
         console.log(Game_id, time_slot, date)
-        const NotAvailable = await Ticket.findOne({ Game_id, time_slot, date }) 
+        const NotAvailable = await Ticket.findOne({ Game_id, time_slot, date })
         console.log(NotAvailable, "<------- Ticket Already booked----->")
         if (NotAvailable) {
             return res.send("This Game is Already Booked for This Time")
@@ -104,11 +104,11 @@ Router.put("/updatecart/:id", userVerify, async (req, res) => {
 
 Router.delete("/deletecart/:id", userVerify, async (req, res) => {
     try {
-        let id = req.params.id; 
+        let id = req.params.id;
         let data = await Cart.findByIdAndDelete({ _id: id });
         console.log(data);
         return res.send(data);
-    } catch (e) {   
+    } catch (e) {
         return res.status(400).send("Delte Ticket Menu item Failed")
     }
 })
@@ -138,7 +138,7 @@ Router.get("/getTotal", userVerify, async (req, res) => {
         console.log(data);
         const total = data.reduce((sum, item) => sum + (item.amount || 0), 0)
         console.log(total)
-        return res.status(200).send({total})
+        return res.status(200).send({ total })
     } catch (e) {
         console.log("Get Total of Booking Game Error", e);
         return res.status(500).send("Get Total Error", e)

@@ -7,7 +7,7 @@ const Nodemailer = require("nodemailer");
 const userVerify = require("../middleware/UserMiddleware.js");
 Router.get("/getticket", authVerify, async (req, res) => {
     try {
-        let data = await Ticket.find().sort({ date: -1 });
+        let data = await Ticket.find().sort({ _id: -1 });
         console.log(data);
         return res.send(data);
     } catch (e) {
@@ -129,7 +129,25 @@ Router.delete("/deleteticket/:id", authVerify, async (req, res) => {
     } catch (e) {
         return res.status(400).send("Cant Delete Ticket")
     }
-   
+
 })
+
+// Example: Express.js
+Router.get('/bookedTicket', userVerify, async (req, res) => {
+    try {
+        // Retrieve the user ID from the JWT token or session
+        const userId = req.user.id;
+        console.log(userId, "userId ")
+
+        // Query the database for tickets booked by the user
+        const tickets = await Ticket.find({ user_id: userId }).sort({ _id: -1 });
+        console.log(tickets, "ticketstickets tickets")
+        // Respond with the tickets data
+        return res.json(tickets);
+    } catch (error) {
+        return res.status(500).json({ message: 'Error retrieving tickets' });
+    }
+});
+
 
 module.exports = Router
