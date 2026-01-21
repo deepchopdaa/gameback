@@ -22,7 +22,7 @@ const cart = require("./controllers/cartcontroller.js");
 const slider = require("./controllers/SliderImage.js");
 
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3100
 app.use(cors());
 app.use(express.json());
 /* file multer */

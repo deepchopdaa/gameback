@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
+const dotenv = require("dotenv")
+
+dotenv.config()
+
 const main = async () => {
     try {
-        await mongoose.connect("mongodb://127.0.0.1:27017/game");
+        await mongoose.connect(process.env.MonogoURI);
         console.log("MongoDb Connected !")
     } catch (e) {
         console.log("connection error", e)

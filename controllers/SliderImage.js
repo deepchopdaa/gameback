@@ -1,99 +1,137 @@
-const express = require('express');
+const express = require("express");
 const Router = express.Router();
-const fs = require('fs')
-const Slider = require("../models/Slider.js")
-const path = require("path")
+
+const Slider = require("../models/Slider.js");
 const upload = require("../middleware/uploadMiddleware.js");
+const cloudinary = require("../config/cloudinary.js");
+
+/**
+ * GET ALL SLIDER IMAGES
+ */
 Router.get("/getimage", async (req, res) => {
     try {
-        let data = await Slider.find().sort({ _id: -1 });
-        console.log(data, "images slider");
-        return res.send(data)
-    } catch (e) {
-        console.log("Slider Data Getting Error",e)
-        return res.send("Slider Get Failed", e)
-    }   
-})
-
-Router.post("/sendimage", upload.single('image'), async (req, res) => {
-    try {
-        const { title } = req.body;
-        console.log(title)
-        if (!title) {
-            console.log("enter require field")
-            return res.status(400).json({ error: "Enter all required fields" });
-        }
-        let data = await Slider.create({ title, image: req.file.path });
-        console.log(data)
-        return res.send(data)
-    } catch (e) {
-        console.log("Image Upload Error",e);
-        return res.send("Data Insert Failed",e)
+        const data = await Slider.find().sort({ _id: -1 });
+        return res.status(200).json(data);
+    } catch (error) {
+        console.error("Slider Fetch Error:", error);
+        return res.status(500).json({ error: "Slider Get Failed" });
     }
-})
+});
 
-Router.put("/updateimage/:id", upload.single('image'), async (req, res) => {
+/**
+ * CREATE SLIDER IMAGE
+ */
+Router.post("/sendimage", upload.single("image"), async (req, res) => {
     try {
         const { title } = req.body;
-        const id = req.params.id
-        console.log(id)
-        let existing = await Slider.findById(id);
+
+        if (!title || !req.file) {
+            return res.status(400).json({ error: "Title and image are required" });
+        }
+
+        const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+            "base64"
+        )}`;
+
+        const uploadResult = await cloudinary.uploader.upload(base64Image, {
+            folder: "sliders",
+        });
+
+        const data = await Slider.create({
+            title,
+            image: uploadResult.secure_url,
+        });
+
+        return res.status(201).json(data);
+    } catch (error) {
+        console.error("Slider Upload Error:", error);
+        return res.status(500).json({ error: "Slider Insert Failed" });
+    }
+});
+
+/**
+ * UPDATE SLIDER IMAGE
+ */
+Router.put("/updateimage/:id", upload.single("image"), async (req, res) => {
+    try {
+        const { title } = req.body;
+        const { id } = req.params;
+
+        const existing = await Slider.findById(id);
         if (!existing) {
-            return res.status(400).send("Record Not Found")
+            return res.status(404).json({ error: "Record Not Found" });
         }
-        console.log("Existing Slider Record", existing);
+
         let updatedImage = existing.image;
+
         if (req.file) {
-            updatedImage = req.file.path;
-            console.log(updatedImage)
-            if (existing.image) {
-                fs.unlink(existing.image, (err) => {
-                    if (err) {
-                        console.error("Error Deleting Old Image :", err)
-                    } else {
-                        console.log('Old Image Deleted Successfully ', existing.image)
-                    }
-                })
+            // Delete old image (best-effort)
+            try {
+                const publicId = existing.image
+                    .split("/")
+                    .slice(-1)[0]
+                    .split(".")[0];
+
+                await cloudinary.uploader.destroy(`sliders/${publicId}`);
+            } catch (err) {
+                console.warn("Old slider image delete skipped");
             }
+
+            // Upload new image
+            const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString(
+                "base64"
+            )}`;
+
+            const uploadResult = await cloudinary.uploader.upload(base64Image, {
+                folder: "sliders",
+            });
+
+            updatedImage = uploadResult.secure_url;
         }
-        let UpdatedData = await Slider.findByIdAndUpdate(
+
+        const updatedData = await Slider.findByIdAndUpdate(
             id,
             { title, image: updatedImage },
             { new: true, runValidators: true }
         );
-        if (!UpdatedData) {
-            return res.status(500).send("Update Data Not Succesfull update")
-        }
-        console.log("Update data ", UpdatedData)
-        return res.status(200).send(UpdatedData)
-    } catch (e) {
-        console.log("Slider Update Error",e);
-        return res.send("Slider Update Failed",e)
-    }
-})
 
+        return res.status(200).json(updatedData);
+    } catch (error) {
+        console.error("Slider Update Error:", error);
+        return res.status(500).json({ error: "Slider Update Failed" });
+    }
+});
+
+/**
+ * DELETE SLIDER IMAGE
+ */
 Router.delete("/deleteimage/:id", async (req, res) => {
     try {
-        const id = req.params.id
-        let existing = await Slider.findById(id);
-        if (!existing) {
-            return res.status(400).send("Record Not Found !")
-        }
-        let imagePath = path.join(__dirname, "../uploads", existing.image);
-        fs.unlink(imagePath, (err) => {
-            if (err) {
-                console.error("Image Not Deleted");
-            } else {
-                console.log("Image Deleted Successfuly")
-            }
-        })
-        let data = await Slider.findByIdAndDelete(id);
-        console.log(data, "<---delete record -->")
-        return res.send(data)
-    } catch (e) {
-        console.log('Slider Delete Record Error')
-        return res.send("Data Delete Failed")
-    }
-})
+        const { id } = req.params;
 
-module.exports = Router
+        const existing = await Slider.findById(id);
+        if (!existing) {
+            return res.status(404).json({ error: "Record Not Found" });
+        }
+
+        // Delete image from Cloudinary (best-effort)
+        try {
+            const publicId = existing.image
+                .split("/")
+                .slice(-1)[0]
+                .split(".")[0];
+
+            await cloudinary.uploader.destroy(`sliders/${publicId}`);
+        } catch (err) {
+            console.warn("Slider image delete skipped");
+        }
+
+        const data = await Slider.findByIdAndDelete(id);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.error("Slider Delete Error:", error);
+        return res.status(500).json({ error: "Slider Delete Failed" });
+    }
+});
+
+module.exports = Router;

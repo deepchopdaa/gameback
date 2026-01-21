@@ -6,6 +6,7 @@ const path = require("path")
 const fs = require("fs")
 const upload = require("../middleware/uploadMiddleware.js");
 const userVerify = require("../middleware/UserMiddleware.js");
+const cloudinary = require("../middleware/Cloudinary.js");
 
 Router.get("/getCategoryGame/:id", async (req, res) => {
     try {
@@ -101,77 +102,108 @@ Router.get("/getGame", authVerify, async (req, res) => {
 
 Router.post("/addGame", authVerify, upload.single('image'), async (req, res) => {
     try {
-        let { title, category, description, price, rating } = req.body;
-        console.log(req.body)
+        const { title, category, description, price, rating } = req.body;
+
         if (!title || !category || !description || !price || !rating) {
-            console.log("enter require field")
-            return res.status(400).json({ error: "Enter all required fields" });
+            return res.status(400).json({ error: "All fields are required" });
         }
+
+        if (!req.file) {
+            return res.status(400).json({ error: "Image is required" });
+        }
+
+        // Convert buffer → base64
+        const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+
+        // Upload to Cloudinary
+        const uploadResult = await cloudinary.uploader.upload(base64Image, {
+            folder: "games",
+        });
+
         const newGame = await Game.create({
             title,
             category,
             description,
             price,
-            image: req.file.path, // Store file path
             rating,
+            image: uploadResult.secure_url, // ✅ URL ONLY
         });
-        return res.status(201).json(newGame);
-    } catch (e) {
-        console.log(e)
-        return res.status(500).json({
-            error: "server error"
-        })
+
+        return res.status(201).json({
+            success: true,
+            message: "Game added successfully",
+            game: newGame,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Server error" });
     }
 })
 
 
 Router.put("/updateGame/:id", authVerify, upload.single("image"), async (req, res) => {
     try {
-        let id = req.params.id;
-        console.log("Update Request for ID:", id);
-        console.log(req.body)
-        let { title, category, description, price, rating } = req.body;
+        const { id } = req.params;
+        const { title, category, description, price, rating } = req.body;
+
         if (!title || !category || !description || !price || !rating) {
-            return res.status(400).json({ error: "Enter all required fields" });
+            return res.status(400).json({ error: "All fields are required" });
         }
 
-        // Step 1: Find the existing game
-        let existingGame = await Game.findById(id);
+        const existingGame = await Game.findById(id);
         if (!existingGame) {
             return res.status(404).json({ error: "Game not found" });
         }
 
-        console.log("Existing Game Image:", existingGame.image);
+        let updatedImage = existingGame.image;
 
-        // Step 2: Manage Image (Delete Old One if New One is Uploaded)
-        let updatedImage = existingGame.image; // Keep old image if no new image is uploaded
-
+        // If new image uploaded
         if (req.file) {
-            updatedImage = req.file.path; // New uploaded image path
-
-            // Delete old image if it exists
-            if (existingGame.image) {
-                const oldImagePath = path.join(__dirname, "../", existingGame.image); // Ensure correct path
-                fs.unlink(oldImagePath, (err) => {
-                    if (err) {
-                        console.error("Error deleting old image:", err);
-                    } else {
-                        console.log("Old image deleted successfully:", oldImagePath);
+            // ⚠️ Delete old image (best-effort)
+            /*     if (existingGame.image) {
+                    try {
+                        const publicId = existingGame.image
+                            .split("/")
+                            .slice(-1)[0]
+                            .split(".")[0];
+    
+                        await cloudinary.uploader.destroy(`games/${publicId}`);
+                    } catch (err) {
+                        console.warn("Old image delete skipped:", err.message);
                     }
-                });
-            }
+                } */
+
+            // Upload new image
+            const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
+
+            const uploadResult = await cloudinary.uploader.upload(base64Image, {
+                folder: "games",
+            });
+            console.log("Cloudinary keys:", Object.keys(cloudinary));
+            console.log(uploadResult, "responce")
+            updatedImage = uploadResult.secure_url;
         }
 
-        // Step 3: Update game details in the database
-        let updatedGame = await Game.findByIdAndUpdate(
+        const updatedGame = await Game.findByIdAndUpdate(
             id,
-            { title, category, description, price, rating, image: updatedImage },
-            { new: true } // Returns updated document
+            {
+                title,
+                category,
+                description,
+                price,
+                rating,
+                image: updatedImage,
+            },
+            { new: true }
         );
 
-        return res.status(200).json({ message: "Game updated successfully", updatedGame });
+        return res.status(200).json({
+            success: true,
+            message: "Game updated successfully",
+            game: updatedGame,
+        });
     } catch (error) {
-        console.error("Error updating game:", error);
+        console.error("Update error:", error);
         return res.status(500).json({ error: "Server error" });
     }
 });
@@ -180,32 +212,36 @@ Router.put("/updateGame/:id", authVerify, upload.single("image"), async (req, re
 
 Router.delete("/deleteGame/:id", authVerify, async (req, res) => {
     try {
-        let id = req.params.id;
-        console.log("Delete request received for ID:", id);
+        const { id } = req.params;
 
-        // Step 1: Find the game by ID
-        let game = await Game.findById(id);
+        const game = await Game.findById(id);
         if (!game) {
             return res.status(404).json({ error: "Game not found" });
         }
 
-        // Step 2: Delete the associated image (if exists)
+        // Delete image from Cloudinary (best-effort)
         if (game.image) {
-            let imagePath = path.join(__dirname, "../uploads", game.image); // Adjust the path accordingly
-            fs.unlink(imagePath, (err) => {
-                if (err) {
-                    console.error("Error deleting image:", err);
-                } else {
-                    console.log("Image deleted successfully:", imagePath);
-                }
-            });
-        }
-        // Step 3: Delete the game record from the database
-        let deletedGame = await Game.findByIdAndDelete(id);
+            try {
+                const publicId = game.image
+                    .split("/")
+                    .slice(-1)[0]
+                    .split(".")[0];
 
-        return res.status(200).json({ message: "Game deleted successfully", deletedGame });
+                await cloudinary.uploader.destroy(`games/${publicId}`);
+            } catch (err) {
+                console.warn("Cloudinary delete skipped:", err.message);
+            }
+        }
+
+        const deletedGame = await Game.findByIdAndDelete(id);
+
+        return res.status(200).json({
+            success: true,
+            message: "Game deleted successfully",
+            game: deletedGame,
+        });
     } catch (error) {
-        console.error("Error deleting game:", error);
+        console.error("Delete error:", error);
         return res.status(500).json({ error: "Server error" });
     }
 });
