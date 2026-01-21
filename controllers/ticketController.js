@@ -5,6 +5,7 @@ const game = require("../models/Game.js")
 const authVerify = require('../middleware/authMiddleware.js')
 const Nodemailer = require("nodemailer");
 const userVerify = require("../middleware/UserMiddleware.js");
+
 Router.get("/getticket", authVerify, async (req, res) => {
     try {
         let data = await Ticket.find().sort({ _id: -1 });
@@ -64,7 +65,7 @@ Router.post("/addticket", userVerify, async (req, res) => {
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 10px;">💰 Amount</td>
-                        <td style="border: 1px solid #ddd; padding: 10px;">₹${amount}</td>
+                        <td style="border: 1px solid #ddd; padding: 10px;">₹${amount}</ td>
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 10px;">📅 Date</td>

@@ -3,7 +3,7 @@ const Router = express.Router();
 const User = require("../models/User.js")
 const jwt = require("jsonwebtoken")
 const secrate_key = "secratekey"
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const Nodemailer = require("nodemailer");
 
 Router.post("/register", async (req, res) => {
@@ -26,7 +26,7 @@ Router.post("/register", async (req, res) => {
                     });
             }
             User.create(req.body).then((data) => {
-                const transporter = Nodemailer.createTransport({        
+                const transporter = Nodemailer.createTransport({
                     host: "smtp.ethereal.email",
                     service: 'gmail',
                     port: 465,

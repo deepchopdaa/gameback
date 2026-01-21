@@ -23,7 +23,6 @@ Router.get("/getCategoryGame/:id", async (req, res) => {
     }
 })
 
-
 /* for Game Detail */
 Router.get("/getUserGame", async (req, res) => {
     try {
@@ -100,7 +99,7 @@ Router.get("/getGame", authVerify, async (req, res) => {
 })
 
 
-Router.post("/addGame", authVerify, upload.single('image'), async (req, res) => {
+Router.post("/addGame", upload.single('image'), async (req, res) => {
     try {
         const { title, category, description, price, rating } = req.body;
 

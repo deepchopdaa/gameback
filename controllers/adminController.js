@@ -10,7 +10,7 @@ const Ticket = require("../models/Ticket.js");
 const User = require("../models//User.js");
 const jwt = require("jsonwebtoken")
 const secrate_key = "secratekey"
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 Router.get("/getAdmin", async (req, res) => {
     try {

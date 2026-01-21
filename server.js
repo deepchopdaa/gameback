@@ -40,7 +40,6 @@ app.use('/ticket', ticketRoute)
 app.use('/slider', slider)
 app.use('/user', userRoute)
 app.use('/send', SendMail)
-
 app.use('/contact', Contact)
 app.listen(PORT, () => {
     console.log("app is running on 3100 port")
